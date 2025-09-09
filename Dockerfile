@@ -6,7 +6,6 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-RUN npm run start:staging
 
 EXPOSE 3000
 
