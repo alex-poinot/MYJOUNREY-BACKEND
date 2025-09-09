@@ -52,7 +52,7 @@ class MissionDao {
         delete mission.DOS_NOM;
         mission.mission = mission.MISSION;
         delete mission.MISSION;
-        mission.avantMission = { percentage: 75, lab: true, conflitCheck: true, qac: true, qam: false, ldm: false };
+        mission.avantMission = { percentage: 75, labGroupe: true, labDossier: true, conflitCheck: true, qac: true, qam: false, ldm: false };
         mission.pendantMission = { percentage: 25, nog: true, checklist: false, revision: false, supervision: false };
         mission.finMission = { percentage: 0, ndsCr: false, qmm: false, plaquette: false, restitution: false };
       });
@@ -62,7 +62,7 @@ class MissionDao {
 
       return result.recordset;
     } catch (error) {
-      logger.error('Erreur lors de la récupération des missions pour le tableau de bord:', error);
+      logger.error('Erreur lors de la récupération des missions pour le tableau de bord : ', error);
       throw new Error('Erreur lors de la récupération des missions pour le tableau de bord');
     }
   }
