@@ -80,18 +80,27 @@ process.on('unhandledRejection', (reason, promise) => {
 async function startServer() {
   try {
     // Connexion à la base de données
-    await connectToDatabase();
-    logger.info('Connexion à la base de données établie');
+    try {
+      await connectToDatabase();
+      logger.info('Connexion à la base de données établie');
+    } catch (dbError) {
+      logger.warn('Impossible de se connecter à la base de données:', dbError.message);
+      logger.info('L\'API démarre sans connexion à la base de données');
+    }
 
     // Démarrage du serveur
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       logger.info(`Serveur démarré sur le port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`Health check: http://localhost:${PORT}/health`);
+      logger.info(`Health check: http://0.0.0.0:${PORT}/health`);
+      logger.info(`API accessible sur: http://10.100.9.40:${PORT}`);
     });
   } catch (error) {
     logger.error('Erreur lors du démarrage du serveur:', error);
-    process.exit(1);
+    // En staging, on peut continuer même si la DB n'est pas disponible
+    if (process.env.NODE_ENV !== 'staging') {
+      process.exit(1);
+    }
   }
 }
 
