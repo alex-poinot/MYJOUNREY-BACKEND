@@ -49,11 +49,11 @@ app.use((req, res, next) => {
 });
 
 // Routes de l'API
-app.use('/api/users', userRoutes);
-app.use('/api/missions', missionRoutes);
+app.use('/api/myjourney/users', userRoutes);
+app.use('/api/myjourney/missions', missionRoutes);
 
 // Route de santé
-app.get('/health', (req, res) => {
+app.get('/api/myjourney/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),

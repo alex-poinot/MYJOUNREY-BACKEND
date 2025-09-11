@@ -50,7 +50,7 @@ Les logs sont automatiquement générés dans le dossier `logs/` :
 
 ## 📊 Monitoring
 
-Endpoint de santé disponible sur : `GET /health`
+Endpoint de santé disponible sur : `GET /api/myjourney/health`
 
 Retourne :
 ```json

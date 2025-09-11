@@ -56,7 +56,7 @@ docker logs --tail 10 myjourney-api-staging
 # Tester la connexion
 echo "🔍 Test de connexion à l'API..."
 for i in {1..5}; do
-    if curl -f http://10.100.9.40:3000/health >/dev/null 2>&1; then
+    if curl -f http://10.100.9.40:3000/api/myjourney/health >/dev/null 2>&1; then
         echo "✅ L'API est accessible!"
         break
     else
@@ -66,7 +66,7 @@ for i in {1..5}; do
 done
 
 # Test final
-if curl -f http://10.100.9.40:3000/health >/dev/null 2>&1; then
+if curl -f http://10.100.9.40:3000/api/myjourney/health >/dev/null 2>&1; then
     echo "✅ Déploiement réussi!"
 else
     echo "❌ L'API n'est pas encore accessible"
@@ -75,5 +75,5 @@ else
 fi
 
 echo "🌐 API accessible sur: http://10.100.9.40:3000"
-echo "📊 Health check: http://10.100.9.40:3000/health"
+echo "📊 Health check: http://10.100.9.40:3000/api/myjourney/health"
 echo "📋 Pour voir les logs: docker logs -f myjourney-api-staging"
