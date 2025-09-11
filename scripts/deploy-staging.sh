@@ -20,6 +20,14 @@ fi
 
 # Démarrer le conteneur
 echo "▶️ Démarrage du conteneur..."
+
+# Vérifier si le fichier .env.staging existe
+if [ ! -f ".env.staging" ]; then
+    echo "❌ Le fichier .env.staging n'existe pas!"
+    echo "💡 Veuillez configurer vos variables d'environnement dans .env.staging"
+    exit 1
+fi
+
 docker run -d \
     --name myjourney-api-staging \
     -p 3000:3000 \
