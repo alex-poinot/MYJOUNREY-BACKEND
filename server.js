@@ -56,8 +56,21 @@ app.use((req, res, next) => {
 app.use('/api/myjourney/users', userRoutes);
 app.use('/api/myjourney/missions', missionRoutes);
 
+// Routes alternatives pour gérer les cas où le reverse proxy enlève le préfixe
+app.use('/users', userRoutes);
+app.use('/missions', missionRoutes);
+
 // Route de santé
 app.get('/api/myjourney/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// Route de santé alternative pour le reverse proxy
+app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
