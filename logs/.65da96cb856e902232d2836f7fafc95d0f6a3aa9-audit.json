@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\alexandre.poinot\\visual-studio-workplace\\PROJET MYJOURNEY\\test-back\\logs\\.65da96cb856e902232d2836f7fafc95d0f6a3aa9-audit.json",
+    "files": [
+        {
+            "date": 1756824472273,
+            "name": "C:\\Users\\alexandre.poinot\\visual-studio-workplace\\PROJET MYJOURNEY\\test-back\\logs\\application-2025-09-02.log",
+            "hash": "d1ef2bb2f020ce4ecf5152df7ab195fc858b9a1ce6cb35727abe5ab21f033b31"
+        },
+        {
+            "date": 1756888213151,
+            "name": "C:\\Users\\alexandre.poinot\\visual-studio-workplace\\PROJET MYJOURNEY\\test-back\\logs\\application-2025-09-03.log",
+            "hash": "722dfba5301987fd1ccd4d98e680643921bb631a86ce1ee9799132a53e62d6e9"
+        },
+        {
+            "date": 1756971267531,
+            "name": "C:\\Users\\alexandre.poinot\\visual-studio-workplace\\PROJET MYJOURNEY\\test-back\\logs\\application-2025-09-04.log",
+            "hash": "8608c3b652b9d4c7fe90c3bf798b50ba1f7377eece427d1e9725a29690261d92"
+        }
+    ],
+    "hashType": "sha256"
+}

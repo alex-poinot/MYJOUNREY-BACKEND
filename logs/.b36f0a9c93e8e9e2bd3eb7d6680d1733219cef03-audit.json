@@ -1,0 +1,35 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\.b36f0a9c93e8e9e2bd3eb7d6680d1733219cef03-audit.json",
+    "files": [
+        {
+            "date": 1755684267550,
+            "name": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\application-2025-08-20.log",
+            "hash": "16b7c19df5c9aa8a9b6d0378f9f1b9879916f33d87e21de73e1e62c09e7b1f56"
+        },
+        {
+            "date": 1756133749148,
+            "name": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\application-2025-08-25.log",
+            "hash": "f701f4b2006863c67c871b708fcdfc05f675d457c955efd7e7b74854ab713a23"
+        },
+        {
+            "date": 1756193573222,
+            "name": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\application-2025-08-26.log",
+            "hash": "e36e4a506f14df5fce61cc378e45461415dadd1603d67c40912e2897d2e7b55b"
+        },
+        {
+            "date": 1756388769142,
+            "name": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\application-2025-08-28.log",
+            "hash": "62335eaf9b0f5199ad7a1153acc4fbf3ac0e41c58aa4084539518ad4ce58d66d"
+        },
+        {
+            "date": 1756824030771,
+            "name": "C:\\Users\\alexandre.poinot\\OneDrive - Grant Thornton France\\Bureau\\test-back\\logs\\application-2025-09-02.log",
+            "hash": "3ab6e4027c1317d8b4e1f0d72fd8e7c1d96efc902e0be3db29e8f5c64b68fa88"
+        }
+    ],
+    "hashType": "sha256"
+}
