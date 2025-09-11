@@ -6,6 +6,7 @@ services:
     container_name: myjourney-api-staging
     ports:
       - "3000:3000"
+      - "3443:3443"
     environment:
       - NODE_ENV=staging
     env_file:

@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import https from 'https';
+import http from 'http';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs';
@@ -30,6 +32,8 @@ if (!fs.existsSync(logsDir)) {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
+const HTTPS_ENABLED = process.env.HTTPS_ENABLED === 'true';
 
 // Middlewares de sécurité
 app.use(helmet());
@@ -88,13 +92,31 @@ async function startServer() {
       logger.info('L\'API démarre sans connexion à la base de données');
     }
 
-    // Démarrage du serveur
-    app.listen(PORT, '0.0.0.0', () => {
-      logger.info(`Serveur démarré sur le port ${PORT}`);
+    // Démarrage du serveur HTTP
+    const httpServer = http.createServer(app);
+    httpServer.listen(PORT, '0.0.0.0', () => {
+      logger.info(`Serveur HTTP démarré sur le port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`Health check: http://0.0.0.0:${PORT}/health`);
-      logger.info(`API accessible sur: http://10.100.9.40:${PORT}`);
+      logger.info(`Health check: http://10.100.9.40:${PORT}/api/myjourney/health`);
     });
+
+    // Démarrage du serveur HTTPS (si activé)
+    if (HTTPS_ENABLED) {
+      try {
+        const privateKey = fs.readFileSync(process.env.SSL_KEY_PATH, 'utf8');
+        const certificate = fs.readFileSync(process.env.SSL_CERT_PATH, 'utf8');
+        const credentials = { key: privateKey, cert: certificate };
+
+        const httpsServer = https.createServer(credentials, app);
+        httpsServer.listen(HTTPS_PORT, '0.0.0.0', () => {
+          logger.info(`Serveur HTTPS démarré sur le port ${HTTPS_PORT}`);
+          logger.info(`Health check HTTPS: https://10.100.9.40:${HTTPS_PORT}/api/myjourney/health`);
+        });
+      } catch (sslError) {
+        logger.error('Erreur lors du démarrage HTTPS:', sslError.message);
+        logger.info('Continuez avec HTTP uniquement');
+      }
+    }
   } catch (error) {
     logger.error('Erreur lors du démarrage du serveur:', error);
     // En staging, on peut continuer même si la DB n'est pas disponible

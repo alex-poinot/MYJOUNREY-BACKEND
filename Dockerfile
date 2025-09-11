@@ -16,7 +16,7 @@ COPY . .
 RUN mkdir -p logs
 
 # Exposer le port 3000
-EXPOSE 3000
+EXPOSE 3000 3443
 
 # Définir l'environnement
 ENV NODE_ENV=staging
