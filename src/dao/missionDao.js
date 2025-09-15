@@ -52,9 +52,9 @@ class MissionDao {
         delete mission.DOS_NOM;
         mission.mission = mission.MISSION;
         delete mission.MISSION;
-        mission.avantMission = { percentage: 75, labGroupe: true, labDossier: true, conflitCheck: true, qac: true, qam: false, ldm: false };
+        mission.avantMission = { percentage: 75, labGroupe: true, labDossier: true, cartoLabGroupe: true, cartoLabDossier: true, conflitCheck: true, qac: true, qam: false, ldm: false };
         mission.pendantMission = { percentage: 25, nog: true, checklist: false, revision: false, supervision: false };
-        mission.finMission = { percentage: 0, ndsCr: false, qmm: false, plaquette: false, restitution: false };
+        mission.finMission = { percentage: 0, cr: false, nds: false, qmm: false, plaquette: false, restitution: false, finRelationClient: false };
       });
 
       // Log the number of missions retrieved
