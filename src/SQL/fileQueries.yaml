@@ -1,0 +1,123 @@
+setModuleFileMission: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @MissionIdParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission');
+
+setModuleFileDossier: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @DossierParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier');
+
+setModuleFileGroupe: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @GroupeParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe');
+
+getModuleFilesMission: |
+  declare @missionId VARCHAR(30) = @MissionIdParam;
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @profilId int = @ProfilIdParam;
+
+  WITH MyListFichiers AS (
+    SELECT MODFILE_ModuleId, 
+      MODFILE_MissionId, 
+      MODFILE_DateExpiration, 
+      MODFILE_TITLE,
+      CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
+      MODFILE_Id
+    FROM MODULE_FILE
+    WHERE MODFILE_MissionId = @missionId
+      AND MODFILE_ModuleId = @moduleId
+      AND MODFILE_Source = 'Mission'
+  )
+
+  select DM.DTMOD_ModuleLecture, 
+    DM.DTMOD_ModuleModification,
+    LF.MODFILE_ModuleId, 
+    LF.MODFILE_MissionId, 
+    LF.MODFILE_DateExpiration, 
+    LF.MODFILE_TITLE,
+    LF.Base64_File,
+    LF.MODFILE_Id
+  from DROITS_MODULE DM
+  LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
+  WHERE DM.DTMOD_ModuleId = @moduleId
+    AND DM.DTMOD_ProfilId = @profilId
+
+getModuleFilesDossier: |
+  declare @dossier VARCHAR(30) = @DossierParam;
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @profilId int = @ProfilIdParam;
+
+  WITH MyListFichiers AS (
+    SELECT MODFILE_ModuleId, 
+      MODFILE_MissionId, 
+      MODFILE_DateExpiration, 
+      MODFILE_TITLE,
+      CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
+      MODFILE_Id
+    FROM MODULE_FILE
+    WHERE MODFILE_DosPgi = @dossier
+      AND MODFILE_ModuleId = @moduleId
+      AND MODFILE_Source = 'Dossier'
+  )
+
+  select DM.DTMOD_ModuleLecture, 
+    DM.DTMOD_ModuleModification,
+    LF.MODFILE_ModuleId, 
+    LF.MODFILE_MissionId, 
+    LF.MODFILE_DateExpiration, 
+    LF.MODFILE_TITLE,
+    LF.Base64_File,
+    LF.MODFILE_Id
+  from DROITS_MODULE DM
+  LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
+  WHERE DM.DTMOD_ModuleId = @moduleId
+    AND DM.DTMOD_ProfilId = @profilId
+
+getModuleFilesGroupe: |
+  declare @groupe VARCHAR(30) = @GroupeParam;
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @profilId int = @ProfilIdParam;
+
+  WITH MyListFichiers AS (
+    SELECT MODFILE_ModuleId, 
+      MODFILE_MissionId, 
+      MODFILE_DateExpiration, 
+      MODFILE_TITLE,
+      CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
+      MODFILE_Id
+    FROM MODULE_FILE
+    WHERE MODFILE_DosGroupe = @groupe
+      AND MODFILE_ModuleId = @moduleId
+      AND MODFILE_Source = 'Groupe'
+  )
+
+  select DM.DTMOD_ModuleLecture, 
+    DM.DTMOD_ModuleModification,
+    LF.MODFILE_ModuleId, 
+    LF.MODFILE_MissionId, 
+    LF.MODFILE_DateExpiration, 
+    LF.MODFILE_TITLE,
+    LF.Base64_File,
+    LF.MODFILE_Id
+  from DROITS_MODULE DM
+  LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
+  WHERE DM.DTMOD_ModuleId = @moduleId
+    AND DM.DTMOD_ProfilId = @profilId
+
+deleteModuleFile: |
+  DELETE FROM MODULE_FILE
+  WHERE MODFILE_Id = @FileIdParam

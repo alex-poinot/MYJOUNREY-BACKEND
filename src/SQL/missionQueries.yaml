@@ -1,25 +1,61 @@
 getAllMissionsDashboard: |
-  SELECT DISTINCT 
-      DOS_SOCIETEGROUPE, 
-      DOS_SOCIETEGROUPELIBELLE, 
-      D.DOS_PGI, 
-      DOS_NOM, 
-      CASE 
-          WHEN MD_MISSION LIKE '2%' THEN 'Mission EC' 
-          WHEN MD_MISSION LIKE '37%' THEN 'Mission Paie' 
-          ELSE 'Mission Spé' 
-      END as MISSION 
-  FROM MISSION_DOSSIER MD 
-  LEFT JOIN DOSSIER D ON D.DOS_PGI = MD.DOS_PGI
-  LEFT JOIN SSIS_DOSSIER_USR_ID S ON S.DOS_PGI = D.DOS_PGI
-  LEFT JOIN UTILISATEUR U ON U.USR_ID = S.USR_ID
-  WHERE U.USR_MAIL = @Email
-    AND USR_ROLE not in ('favori')
-    AND D.DOS_ETAT = 'Ouvert' 
-    AND MD.MD_ETAT = 'ENC'
-    AND D.DOS_PGI NOT IN ('555', '556')
-    ORDER BY DOS_SOCIETEGROUPE, D.DOS_PGI, CASE 
-      WHEN MD_MISSION LIKE '2%' THEN 'Mission EC' 
-      WHEN MD_MISSION LIKE '37%' THEN 'Mission Paie' 
-      ELSE 'Mission Spé' 
-    END
+  DECLARE @Mail VARCHAR(250) = @MailParam;
+
+  WITH MyListStatus AS (
+    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosGroupe AS MODSTAT_Jointure
+    FROM MODULE_STATUS
+    WHERE MODSTAT_Source = 'Groupe'
+
+    UNION ALL
+
+    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosPgi AS MODSTAT_Jointure
+    FROM MODULE_STATUS
+    WHERE MODSTAT_Source = 'Dossier'
+
+    UNION ALL
+
+    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_MissionId AS MODSTAT_Jointure
+    FROM MODULE_STATUS
+    WHERE MODSTAT_Source = 'Mission'
+  ), MySourcePossible AS (
+    SELECT 'Mission' AS SourcePossible
+    UNION ALL 
+    SELECT 'Dossier' AS SourcePossible
+    UNION ALL
+    SELECT 'Groupe' AS SourcePossible
+  ), MyListeDroitMission AS (
+    SELECT DM.DTMISS_Source,
+      DM.DTMISS_MissionId,
+      DM.DTMISS_ProfilId,
+      SP.SourcePossible
+    from DROITS_MISSION DM, MySourcePossible SP
+    WHERE DM.DTMISS_Actif = 'oui'
+      and DM.DTMISS_UsrMail = @Mail
+  )
+
+  SELECT D.DOS_SOCIETEGROUPE, 
+    D.DOS_SOCIETEGROUPELIBELLE, 
+    MD.DOS_PGI, 
+    D.DOS_NOM, 
+    CONCAT(MD.MD_MISSION, ' - ', MD.MD_MILLESIME) AS MISSION, 
+    LDM.DTMISS_Source,
+    LDM.DTMISS_MissionId,
+    LDM.DTMISS_ProfilId,
+    LDM.SourcePossible,
+    LS.MODSTAT_Status,
+    LS.MODSTAT_ModuleId,
+    M.MOD_MouleLibelle
+  from MyListeDroitMission LDM
+  LEFT JOIN ref_MISSION_DOSSIER MD ON MD.CODE_AFFAIRE = lDM.DTMISS_MissionId
+  LEFT JOIN ref_DOSSIER D ON D.DOS_PGI = MD.DOS_PGI
+  LEFT JOIN MyListStatus LS ON LS.MODSTAT_Source = LDM.SourcePossible
+    AND (
+      (LDM.SourcePossible = 'Dossier' AND LS.MODSTAT_Jointure = D.DOS_PGI) 
+      OR (LDM.SourcePossible = 'Mission' AND LS.MODSTAT_Jointure = MD.CODE_AFFAIRE) 
+      OR (LDM.SourcePossible = 'Groupe' AND LS.MODSTAT_Jointure = D.DOS_SOCIETEGROUPE)
+    )
+  LEFT JOIN MODULE M ON M.MOD_ModuleId = LS.MODSTAT_ModuleId
+  WHERE MD.MD_ETAT = 'ENC'
+  ORDER BY D.DOS_SOCIETEGROUPE, 
+    MD.DOS_PGI, 
+    CONCAT(MD.MD_MISSION, ' - ', MD.MD_MILLESIME)

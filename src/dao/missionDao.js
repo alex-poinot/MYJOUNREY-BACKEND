@@ -36,36 +36,109 @@ class MissionDao {
       const pool = await getConnection();
       const request = pool.request();
 
-      request.input('Email', sql.VarChar, email);
+      request.input('MailParam', sql.VarChar, email);
       const result = await request.query(query);
-      logger.info(`${result.recordset.length} utilisateurs récupérés`);
+      logger.info(`${result.recordset.length} lignes récupérées`);
 
-      // je veux renommer dans mon objet retourné le champ DOS_SOCIETEGROUPE en numeroGroupe
-      result.recordset.forEach(mission => {
-        mission.numeroGroupe = mission.DOS_SOCIETEGROUPE;
-        delete mission.DOS_SOCIETEGROUPE;
-        mission.nomGroupe = mission.DOS_SOCIETEGROUPELIBELLE;
-        delete mission.DOS_SOCIETEGROUPELIBELLE;
-        mission.numeroClient = mission.DOS_PGI;
-        delete mission.DOS_PGI;
-        mission.nomClient = mission.DOS_NOM;
-        delete mission.DOS_NOM;
-        mission.mission = mission.MISSION;
-        delete mission.MISSION;
-        mission.avantMission = { percentage: 75, labGroupe: true, labDossier: true, cartoLabGroupe: true, cartoLabDossier: true, conflitCheck: true, qac: true, qam: false, ldm: false };
-        mission.pendantMission = { percentage: 25, nog: true, checklist: false, revision: false, supervision: false };
-        mission.finMission = { percentage: 0, cr: false, nds: false, qmm: false, plaquette: false, restitution: false, finRelationClient: false };
+      // 1️⃣  Regrouper par missionId (ou autre clé unique)
+      const grouped = {};
+
+      for (const row of result.recordset) {
+        const key = row.DTMISS_MissionId; // clé d'agrégation
+
+        // Création d'un conteneur s'il n'existe pas
+        if (!grouped[key]) {
+          grouped[key] = {
+            numeroGroupe: row.DOS_SOCIETEGROUPE,
+            nomGroupe: row.DOS_SOCIETEGROUPELIBELLE,
+            numeroClient: row.DOS_PGI,
+            nomClient: row.DOS_NOM,
+            mission: row.MISSION,
+            missionId: row.DTMISS_MissionId,
+            profilId: row.DTMISS_ProfilId,
+            source: row.DTMISS_Source,
+            avantMission: {
+              labGroupe: false,
+              labDossier: false,
+              cartoLabGroupe: false,
+              cartoLabDossier: false,
+              conflitCheck: false,
+              qac: false,
+              qam: false,
+              ldm: false,
+            },
+            pendantMission: {
+              nog: false,
+              checklist: false,
+              revision: false,
+              supervision: false,
+            },
+            finMission: {
+              cr: false,
+              nds: false,
+              qmm: false,
+              plaquette: false,
+              restitution: false,
+              finRelationClient: false,
+            }
+          };
+        }
+
+        const g = grouped[key];
+        const m = row.MODSTAT_ModuleId;
+        const s = row.SourcePossible;
+        const valide = row.MODSTAT_Status === 'oui';
+
+        if (!valide) continue;
+
+        if (s === 'Groupe' && m === 2) g.avantMission.labGroupe = true;
+        if (s === 'Dossier' && m === 2) g.avantMission.labDossier = true;
+        if (s === 'Groupe' && m === 3) g.avantMission.cartoLabGroupe = true;
+        if (s === 'Dossier' && m === 3) g.avantMission.cartoLabDossier = true;
+        if (s === 'Dossier' && m === 1) g.avantMission.conflitCheck = true;
+        if (s === 'Dossier' && m === 4) g.avantMission.qac = true;
+        if (s === 'Mission' && m === 5) g.avantMission.qam = true;
+        if (s === 'Mission' && m === 6) g.avantMission.ldm = true;
+
+        if (s === 'Mission' && m === 7) g.pendantMission.nog = true;
+        if (s === 'Mission' && m === 8) g.pendantMission.checklist = true;
+        if (s === 'Mission' && m === 9) g.pendantMission.revision = true;
+        if (s === 'Mission' && m === 10) g.pendantMission.supervision = true;
+
+        if (s === 'Mission' && m === 12) g.finMission.cr = true;
+        if (s === 'Mission' && m === 11) g.finMission.nds = true;
+        if (s === 'Mission' && m === 13) g.finMission.qmm = true;
+        if (s === 'Mission' && m === 14) g.finMission.plaquette = true;
+        if (s === 'Mission' && m === 15) g.finMission.restitution = true;
+        if (s === 'Mission' && m === 16) g.finMission.finRelationClient = true;
+      }
+
+      const final = Object.values(grouped).map(m => {
+        const a = m.avantMission;
+        const p = m.pendantMission;
+        const f = m.finMission;
+
+        const pct = (obj, denom) =>
+          Math.ceil(
+            (Object.values(obj).filter(v => v === true).length * 100) / denom
+          );
+
+        a.percentage = pct(a, 8);
+        p.percentage = pct(p, 4);
+        f.percentage = pct(f, 6);
+
+        return m;
       });
 
-      // Log the number of missions retrieved
-      logger.info(`${result.recordset.length} missions récupérées`);
+      logger.info(`${final.length} missions agrégées`);
+      return final;
 
-      return result.recordset;
-    } catch (error) {
-      logger.error('Erreur lors de la récupération des missions pour le tableau de bord : ', error);
+    } catch (err) {
+      logger.error('Erreur getAllMissionsDashboard : ', err);
       throw new Error('Erreur lors de la récupération des missions pour le tableau de bord');
     }
   }
+
 }
 
 export default MissionDao;

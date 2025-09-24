@@ -12,6 +12,8 @@ import logger from './src/utils/logger.js';
 import { connectToDatabase } from './src/config/database.js';
 import userRoutes from './src/routes/userRoutes.js';
 import missionRoutes from './src/routes/missionRoutes.js';
+import fileRoutes from './src/routes/fileRoutes.js';
+import moduleRoutes from './src/routes/moduleRoutes.js';
 import { errorHandler, notFoundHandler } from './src/utils/errorHandlers.js';
 
 // Configuration des variables d'environnement
@@ -53,23 +55,12 @@ app.use((req, res, next) => {
 });
 
 // Routes de l'API
-app.use('/api/myjourney/users', userRoutes);
-app.use('/api/myjourney/missions', missionRoutes);
-
-// Routes alternatives pour gérer les cas où le reverse proxy enlève le préfixe
 app.use('/users', userRoutes);
 app.use('/missions', missionRoutes);
+app.use('/files', fileRoutes);
+app.use('/modules', moduleRoutes);
 
 // Route de santé
-app.get('/api/myjourney/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
-
-// Route de santé alternative pour le reverse proxy
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',

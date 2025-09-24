@@ -1,0 +1,59 @@
+setModuleStatusMission: |
+  DECLARE @moduleId int = (SELECT MOD_ModuleId FROM MODULE WHERE MOD_MouleLibelle = @ModuleParam);
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @status varchar(30) = @StatusParam;
+  DECLARE @missionIdDosPgiDosGroupe varchar(50) = @MissionIdDosPgiDosGroupeParam;
+
+  IF EXISTS (SELECT 1 FROM MODULE_STATUS WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Mission' AND MODSTAT_MissionId = @missionIdDosPgiDosGroupe)
+    BEGIN
+      UPDATE MODULE_STATUS
+      SET MODSTAT_Status = @status,
+        MODSTAT_LastModif = GETDATE(),
+        MODSTAT_UsrMail = @mail
+      WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Mission' AND MODSTAT_MissionId = @missionIdDosPgiDosGroupe
+    END
+  ELSE
+    BEGIN
+      INSERT INTO MODULE_STATUS (MODSTAT_ModuleId, MODSTAT_MissionId, MODSTAT_Source, MODSTAT_Status, MODSTAT_LastModif, MODSTAT_UsrMail)
+      VALUES (@moduleId, @missionIdDosPgiDosGroupe, 'Mission', @status, GETDATE(), @mail)
+    END
+
+setModuleStatusDossier: |
+  DECLARE @moduleId int = (SELECT MOD_ModuleId FROM MODULE WHERE MOD_MouleLibelle = @ModuleParam);
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @status varchar(30) = @StatusParam;
+  DECLARE @missionIdDosPgiDosGroupe varchar(50) = @MissionIdDosPgiDosGroupeParam;
+
+  IF EXISTS (SELECT 1 FROM MODULE_STATUS WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Dossier' AND MODSTAT_DosPgi = @missionIdDosPgiDosGroupe)
+    BEGIN
+      UPDATE MODULE_STATUS
+      SET MODSTAT_Status = @status,
+        MODSTAT_LastModif = GETDATE(),
+        MODSTAT_UsrMail = @mail
+      WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Dossier' AND MODSTAT_DosPgi = @missionIdDosPgiDosGroupe
+    END
+  ELSE
+    BEGIN
+      INSERT INTO MODULE_STATUS (MODSTAT_ModuleId, MODSTAT_DosPgi, MODSTAT_Source, MODSTAT_Status, MODSTAT_LastModif, MODSTAT_UsrMail)
+      VALUES (@moduleId, @missionIdDosPgiDosGroupe, 'Dossier', @status, GETDATE(), @mail)
+    END
+
+setModuleStatusGroupe: |
+  DECLARE @moduleId int = (SELECT MOD_ModuleId FROM MODULE WHERE MOD_MouleLibelle = @ModuleParam);
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @status varchar(30) = @StatusParam;
+  DECLARE @missionIdDosPgiDosGroupe varchar(50) = @MissionIdDosPgiDosGroupeParam;
+
+  IF EXISTS (SELECT 1 FROM MODULE_STATUS WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Groupe' AND MODSTAT_DosGroupe = @missionIdDosPgiDosGroupe)
+    BEGIN
+      UPDATE MODULE_STATUS
+      SET MODSTAT_Status = @status,
+        MODSTAT_LastModif = GETDATE(),
+        MODSTAT_UsrMail = @mail
+      WHERE MODSTAT_ModuleId = @moduleId AND MODSTAT_Source = 'Groupe' AND MODSTAT_DosGroupe = @missionIdDosPgiDosGroupe
+    END
+  ELSE
+    BEGIN
+      INSERT INTO MODULE_STATUS (MODSTAT_ModuleId, MODSTAT_DosGroupe, MODSTAT_Source, MODSTAT_Status, MODSTAT_LastModif, MODSTAT_UsrMail)
+      VALUES (@moduleId, @missionIdDosPgiDosGroupe, 'Groupe', @status, GETDATE(), @mail)
+    END
