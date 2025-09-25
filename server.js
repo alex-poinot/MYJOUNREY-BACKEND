@@ -14,6 +14,7 @@ import userRoutes from './src/routes/userRoutes.js';
 import missionRoutes from './src/routes/missionRoutes.js';
 import fileRoutes from './src/routes/fileRoutes.js';
 import moduleRoutes from './src/routes/moduleRoutes.js';
+import logRoutes from './src/routes/logRoutes.js';
 import { errorHandler, notFoundHandler } from './src/utils/errorHandlers.js';
 
 // Configuration des variables d'environnement
@@ -59,6 +60,7 @@ app.use('/users', userRoutes);
 app.use('/missions', missionRoutes);
 app.use('/files', fileRoutes);
 app.use('/modules', moduleRoutes);
+app.use('/logs', logRoutes);
 
 // Route de santé
 app.get('/health', (req, res) => {

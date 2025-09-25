@@ -58,59 +58,58 @@ class MissionDao {
             profilId: row.DTMISS_ProfilId,
             source: row.DTMISS_Source,
             avantMission: {
-              labGroupe: false,
-              labDossier: false,
-              cartoLabGroupe: false,
-              cartoLabDossier: false,
-              conflitCheck: false,
-              qac: false,
-              qam: false,
-              ldm: false,
+              labGroupe: '',
+              labDossier: '',
+              cartoLabGroupe: '',
+              cartoLabDossier: '',
+              conflitCheck: '',
+              qac: '',
+              qam: '',
+              ldm: '',
             },
             pendantMission: {
-              nog: false,
-              checklist: false,
-              revision: false,
-              supervision: false,
+              nog: '',
+              checklist: '',
+              revision: '',
+              supervision: '',
             },
             finMission: {
-              cr: false,
-              nds: false,
-              qmm: false,
-              plaquette: false,
-              restitution: false,
-              finRelationClient: false,
+              cr: '',
+              nds: '',
+              qmm: '',
+              plaquette: '',
+              restitution: '',
+              finRelationClient: '',
             }
           };
         }
+        
 
         const g = grouped[key];
         const m = row.MODSTAT_ModuleId;
         const s = row.SourcePossible;
-        const valide = row.MODSTAT_Status === 'oui';
+        const e = row.MODSTAT_Status;
 
-        if (!valide) continue;
+        if (s === 'Groupe' && m === 2) g.avantMission.labGroupe = e;
+        if (s === 'Dossier' && m === 2) g.avantMission.labDossier = e;
+        if (s === 'Groupe' && m === 3) g.avantMission.cartoLabGroupe = e;
+        if (s === 'Dossier' && m === 3) g.avantMission.cartoLabDossier = e;
+        if (s === 'Dossier' && m === 1) g.avantMission.conflitCheck = e;
+        if (s === 'Dossier' && m === 4) g.avantMission.qac = e;
+        if (s === 'Mission' && m === 5) g.avantMission.qam = e;
+        if (s === 'Mission' && m === 6) g.avantMission.ldm = e;
 
-        if (s === 'Groupe' && m === 2) g.avantMission.labGroupe = true;
-        if (s === 'Dossier' && m === 2) g.avantMission.labDossier = true;
-        if (s === 'Groupe' && m === 3) g.avantMission.cartoLabGroupe = true;
-        if (s === 'Dossier' && m === 3) g.avantMission.cartoLabDossier = true;
-        if (s === 'Dossier' && m === 1) g.avantMission.conflitCheck = true;
-        if (s === 'Dossier' && m === 4) g.avantMission.qac = true;
-        if (s === 'Mission' && m === 5) g.avantMission.qam = true;
-        if (s === 'Mission' && m === 6) g.avantMission.ldm = true;
+        if (s === 'Mission' && m === 7) g.pendantMission.nog = e;
+        if (s === 'Mission' && m === 8) g.pendantMission.checklist = e;
+        if (s === 'Mission' && m === 9) g.pendantMission.revision = e;
+        if (s === 'Mission' && m === 10) g.pendantMission.supervision = e;
 
-        if (s === 'Mission' && m === 7) g.pendantMission.nog = true;
-        if (s === 'Mission' && m === 8) g.pendantMission.checklist = true;
-        if (s === 'Mission' && m === 9) g.pendantMission.revision = true;
-        if (s === 'Mission' && m === 10) g.pendantMission.supervision = true;
-
-        if (s === 'Mission' && m === 12) g.finMission.cr = true;
-        if (s === 'Mission' && m === 11) g.finMission.nds = true;
-        if (s === 'Mission' && m === 13) g.finMission.qmm = true;
-        if (s === 'Mission' && m === 14) g.finMission.plaquette = true;
-        if (s === 'Mission' && m === 15) g.finMission.restitution = true;
-        if (s === 'Mission' && m === 16) g.finMission.finRelationClient = true;
+        if (s === 'Mission' && m === 12) g.finMission.cr = e;
+        if (s === 'Mission' && m === 11) g.finMission.nds = e;
+        if (s === 'Mission' && m === 13) g.finMission.qmm = e;
+        if (s === 'Mission' && m === 14) g.finMission.plaquette = e;
+        if (s === 'Mission' && m === 15) g.finMission.restitution = e;
+        if (s === 'Mission' && m === 16) g.finMission.finRelationClient = e;
       }
 
       const final = Object.values(grouped).map(m => {

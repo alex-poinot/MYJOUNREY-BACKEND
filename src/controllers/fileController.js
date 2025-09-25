@@ -23,7 +23,7 @@ class FileController {
   getModuleFiles = asyncHandler(async (req, res) => {
     logger.info(`Controller: Requête GET /getModuleFiles`);
 
-    const { missionIdDosPgiDosGroupe, module, profilId, source } = req.params;
+    const { missionIdDosPgiDosGroupe, module, profilId, source} = req.params;
     const result = await this.fileService.getModuleFiles(missionIdDosPgiDosGroupe, module, profilId, source);
 
     res.status(200).json({
@@ -33,10 +33,10 @@ class FileController {
   });
 
   deleteModuleFile = asyncHandler(async (req, res) => {
-    logger.info(`Controller: Requête DELETE /deleteModuleFile`);
+    logger.info(`Controller: Requête POST /deleteModuleFile`);
 
-    const { fileId } = req.params;
-    const result = await this.fileService.deleteModuleFile(fileId);
+    const moduleFile = req.body;
+    const result = await this.fileService.deleteModuleFile(moduleFile.fileId, moduleFile.email, moduleFile.source, moduleFile.missionIdDosPgiDosGroupe, moduleFile.module);
 
     res.status(200).json({
       ...result,

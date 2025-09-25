@@ -2,28 +2,59 @@ setModuleFileMission: |
   declare @str varchar(max);
   declare @bin varbinary(max);
   declare @modId int;
+  declare @missionId varchar(100) = @MissionIdParam;
+  declare @categorie varchar(100) = @CategorieParam;
   set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @MissionIdParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission');
+
+  update MODULE_FILE
+  SET MODFILE_Etat = 'delete'
+  WHERE MODFILE_Niveau = 'Mission'
+    AND MODFILE_MissionId = @missionId
+    AND MODFILE_ModuleId = @modId
+    AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
+
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @missionId, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission', @categorie);
 
 setModuleFileDossier: |
   declare @str varchar(max);
   declare @bin varbinary(max);
   declare @modId int;
+  declare @dosPgi varchar(100) = @DossierParam;
+  declare @categorie varchar(100) = @CategorieParam;
   set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @DossierParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier');
+
+  update MODULE_FILE
+  SET MODFILE_Etat = 'delete'
+  WHERE MODFILE_Niveau = 'Dossier'
+    AND MODFILE_DosPgi = @dosPgi
+    AND MODFILE_ModuleId = @modId
+    AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @dosPgi, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier', @categorie);
 
 setModuleFileGroupe: |
   declare @str varchar(max);
   declare @bin varbinary(max);
   declare @modId int;
+  declare @dosGroupe varchar(100) = @GroupeParam;
+  declare @categorie varchar(100) = @CategorieParam;
   set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Source) values (@modId, @GroupeParam, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe');
+
+  update MODULE_FILE
+  SET MODFILE_Etat = 'delete'
+  WHERE MODFILE_Niveau = 'Groupe'
+    AND MODFILE_DosGroupe = @dosGroupe
+    AND MODFILE_ModuleId = @modId
+    AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @dosGroupe, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe', @categorie);
 
 getModuleFilesMission: |
   declare @missionId VARCHAR(30) = @MissionIdParam;
@@ -36,11 +67,13 @@ getModuleFilesMission: |
       MODFILE_DateExpiration, 
       MODFILE_TITLE,
       CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
-      MODFILE_Id
+      MODFILE_Id,
+      MODFILE_FileCategorie
     FROM MODULE_FILE
     WHERE MODFILE_MissionId = @missionId
       AND MODFILE_ModuleId = @moduleId
-      AND MODFILE_Source = 'Mission'
+      AND MODFILE_Niveau = 'Mission'
+      AND (MODFILE_Etat is null OR MODFILE_Etat <> 'delete')
   )
 
   select DM.DTMOD_ModuleLecture, 
@@ -50,7 +83,8 @@ getModuleFilesMission: |
     LF.MODFILE_DateExpiration, 
     LF.MODFILE_TITLE,
     LF.Base64_File,
-    LF.MODFILE_Id
+    LF.MODFILE_Id,
+    LF.MODFILE_FileCategorie
   from DROITS_MODULE DM
   LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
   WHERE DM.DTMOD_ModuleId = @moduleId
@@ -67,11 +101,13 @@ getModuleFilesDossier: |
       MODFILE_DateExpiration, 
       MODFILE_TITLE,
       CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
-      MODFILE_Id
+      MODFILE_Id,
+      MODFILE_FileCategorie
     FROM MODULE_FILE
     WHERE MODFILE_DosPgi = @dossier
       AND MODFILE_ModuleId = @moduleId
-      AND MODFILE_Source = 'Dossier'
+      AND MODFILE_Niveau = 'Dossier'
+      AND (MODFILE_Etat is null OR MODFILE_Etat <> 'delete')
   )
 
   select DM.DTMOD_ModuleLecture, 
@@ -81,7 +117,8 @@ getModuleFilesDossier: |
     LF.MODFILE_DateExpiration, 
     LF.MODFILE_TITLE,
     LF.Base64_File,
-    LF.MODFILE_Id
+    LF.MODFILE_Id,
+    LF.MODFILE_FileCategorie
   from DROITS_MODULE DM
   LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
   WHERE DM.DTMOD_ModuleId = @moduleId
@@ -98,11 +135,13 @@ getModuleFilesGroupe: |
       MODFILE_DateExpiration, 
       MODFILE_TITLE,
       CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MODFILE_File")))', 'varchar(max)') AS Base64_File,
-      MODFILE_Id
+      MODFILE_Id,
+      MODFILE_FileCategorie
     FROM MODULE_FILE
     WHERE MODFILE_DosGroupe = @groupe
       AND MODFILE_ModuleId = @moduleId
-      AND MODFILE_Source = 'Groupe'
+      AND MODFILE_Niveau = 'Groupe'
+      AND (MODFILE_Etat is null OR MODFILE_Etat <> 'delete')
   )
 
   select DM.DTMOD_ModuleLecture, 
@@ -112,12 +151,14 @@ getModuleFilesGroupe: |
     LF.MODFILE_DateExpiration, 
     LF.MODFILE_TITLE,
     LF.Base64_File,
-    LF.MODFILE_Id
+    LF.MODFILE_Id,
+    LF.MODFILE_FileCategorie
   from DROITS_MODULE DM
   LEFT JOIN MyListFichiers LF ON DM.DTMOD_ModuleId = LF.MODFILE_ModuleId
   WHERE DM.DTMOD_ModuleId = @moduleId
     AND DM.DTMOD_ProfilId = @profilId
 
 deleteModuleFile: |
-  DELETE FROM MODULE_FILE
+  UPDATE MODULE_FILE
+  SET MODFILE_Etat = 'delete'
   WHERE MODFILE_Id = @FileIdParam

@@ -5,6 +5,8 @@ import yaml from 'js-yaml';
 import sql from 'mssql';
 import { getConnection } from '../config/database.js';
 import logger from '../utils/logger.js';
+import LogDao from './logDao.js';
+const logDao = new LogDao();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -36,7 +38,9 @@ class FileDao {
     let missionIdDosPgiDosGroupe = moduleFile.missionIdDosPgiDosGroupe;
     let title = moduleFile.title;
     let source = moduleFile.source;
+    let categorie = moduleFile.categorie;
 
+    
     if (source === 'Mission') {
       try {
         const queries = await this.loadQueries();
@@ -50,8 +54,20 @@ class FileDao {
         request.input('FileParam', sql.NVarChar, file);
         request.input('MissionIdParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
+        request.input('CategorieParam', sql.NVarChar, categorie || null);
 
         const result = await request.query(query);
+
+        await logDao.setLogMission({
+          email,
+          missionId: missionIdDosPgiDosGroupe,
+          modif: 'Ajout fichier mission',
+          typeModif: 'Ajout fichier vue listing',
+          module,
+          champ: source,
+          valeur: title,
+          periode: null
+        });
 
         return result.recordset;
       } catch (error) {
@@ -71,8 +87,20 @@ class FileDao {
         request.input('FileParam', sql.NVarChar, file);
         request.input('DossierParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
+        request.input('CategorieParam', sql.NVarChar, categorie || null);
 
         const result = await request.query(query);
+
+        await logDao.setLogMission({
+          email,
+          dosPgi: missionIdDosPgiDosGroupe,
+          modif: 'Ajout fichier dossier',
+          typeModif: 'Ajout fichier vue listing',
+          module,
+          champ: source,
+          valeur: title,
+          periode: null
+        });
 
         return result.recordset;
       } catch (error) {
@@ -92,8 +120,20 @@ class FileDao {
         request.input('FileParam', sql.NVarChar, file);
         request.input('GroupeParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
+        request.input('CategorieParam', sql.NVarChar, categorie || null);
 
         const result = await request.query(query);
+
+        await logDao.setLogMission({
+          email,
+          dosPgi: missionIdDosPgiDosGroupe,
+          modif: 'Ajout fichier groupe',
+          typeModif: 'Ajout fichier vue listing',
+          module,
+          champ: source,
+          valeur: title,
+          periode: null
+        });
         return result.recordset;
       } catch (error) {
         logger.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -116,7 +156,6 @@ class FileDao {
         request.input('ProfilIdParam', sql.NVarChar, profilId);
 
         const result = await request.query(query);
-
         return result.recordset;
       } catch (error) {
         logger.error('Erreur lors de la récupération des fichiers:', error);
@@ -163,7 +202,7 @@ class FileDao {
     }
   }
 
-  async deleteModuleFile(fileId) {
+  async deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module) {
     try {
       const queries = await this.loadQueries();
       const query = queries.deleteModuleFile;
@@ -174,6 +213,30 @@ class FileDao {
       request.input('FileIdParam', sql.Int, fileId);
 
       const result = await request.query(query);
+
+      if(source === 'Mission') {
+        await logDao.setLogMission({
+          email,
+          missionId: missionIdDosPgiDosGroupe,
+          modif: `Suppression fichier ${source.toLowerCase()}`,
+          typeModif: 'Suppression fichier vue listing',
+          module,
+          champ: source,
+          valeur: fileId.toString(),
+          periode: null
+        });
+      } else {
+        await logDao.setLogMission({
+          email,
+          dosPgi: missionIdDosPgiDosGroupe,
+          modif: `Suppression fichier ${source.toLowerCase()}`,
+          typeModif: 'Suppression fichier vue listing',
+          module,
+          champ: source,
+          valeur: fileId.toString(),
+          periode: null
+        });
+      }
       return result.recordset;
     } catch (error) {
       logger.error('Erreur lors de la suppression du fichier:', error);

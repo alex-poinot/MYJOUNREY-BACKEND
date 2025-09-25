@@ -1,0 +1,35 @@
+setLog: |
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @matricule varchar(50) = (SELECT TOP 1 USR_UNIQUE_ID FROM ref_UTILISATEUR WHERE USR_MAIL = @mail);
+
+  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode)
+  VALUES (@matricule,@mail,@DosPgiParam,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam);
+
+setLogMission: |
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @missionId varchar(100) = @MissionIdParam;
+  DECLARE @matricule varchar(50) = (SELECT TOP 1 USR_UNIQUE_ID FROM ref_UTILISATEUR WHERE USR_MAIL = @mail);
+  DECLARE @dosPgi varchar(50) = (SELECT TOP 1 DOS_PGI FROM ref_MISSION_DOSSIER WHERE CODE_AFFAIRE = @missionId);
+
+  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_MissionId, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode)
+  VALUES (@matricule,@mail,@dosPgi,@missionId,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam);
+
+setLogConnexion: |
+  DECLARE @mail varchar(250) = @MailParam;
+  DECLARE @matricule varchar(50) = (SELECT TOP 1 USR_UNIQUE_ID FROM ref_UTILISATEUR WHERE USR_MAIL = @mail);
+  DECLARE @page varchar(250) = @PageParam;
+
+  IF EXISTS (SELECT 1 FROM LOG_CONNEXION WHERE LC_UsrMail = @mail AND LC_Page = @page AND LC_Date = CAST(GETDATE() AS DATE))
+    BEGIN
+      UPDATE LC
+      SET LC_Compteur = LC.LC_Compteur + 1
+      FROM LOG_CONNEXION LC
+      WHERE LC.LC_UsrMail = @mail 
+        AND LC.LC_Page = @page 
+        AND LC.LC_Date = CAST(GETDATE() AS DATE)
+    END
+  ELSE 
+    BEGIN
+      INSERT INTO LOG_CONNEXION (LC_MatriculeId, LC_UsrMail, LC_Date, LC_Page, LC_Compteur) 
+      VALUES (@matricule, @mail, GETDATE(), @page, 1);
+    END

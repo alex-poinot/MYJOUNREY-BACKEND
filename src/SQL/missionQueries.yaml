@@ -2,21 +2,21 @@ getAllMissionsDashboard: |
   DECLARE @Mail VARCHAR(250) = @MailParam;
 
   WITH MyListStatus AS (
-    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosGroupe AS MODSTAT_Jointure
+    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosGroupe AS MODSTAT_Jointure
     FROM MODULE_STATUS
-    WHERE MODSTAT_Source = 'Groupe'
+    WHERE MODSTAT_Niveau = 'Groupe'
 
     UNION ALL
 
-    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosPgi AS MODSTAT_Jointure
+    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosPgi AS MODSTAT_Jointure
     FROM MODULE_STATUS
-    WHERE MODSTAT_Source = 'Dossier'
+    WHERE MODSTAT_Niveau = 'Dossier'
 
     UNION ALL
 
-    SELECT MODSTAT_Source, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_MissionId AS MODSTAT_Jointure
+    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_MissionId AS MODSTAT_Jointure
     FROM MODULE_STATUS
-    WHERE MODSTAT_Source = 'Mission'
+    WHERE MODSTAT_Niveau = 'Mission'
   ), MySourcePossible AS (
     SELECT 'Mission' AS SourcePossible
     UNION ALL 
@@ -48,7 +48,7 @@ getAllMissionsDashboard: |
   from MyListeDroitMission LDM
   LEFT JOIN ref_MISSION_DOSSIER MD ON MD.CODE_AFFAIRE = lDM.DTMISS_MissionId
   LEFT JOIN ref_DOSSIER D ON D.DOS_PGI = MD.DOS_PGI
-  LEFT JOIN MyListStatus LS ON LS.MODSTAT_Source = LDM.SourcePossible
+  LEFT JOIN MyListStatus LS ON LS.MODSTAT_Niveau = LDM.SourcePossible
     AND (
       (LDM.SourcePossible = 'Dossier' AND LS.MODSTAT_Jointure = D.DOS_PGI) 
       OR (LDM.SourcePossible = 'Mission' AND LS.MODSTAT_Jointure = MD.CODE_AFFAIRE) 
