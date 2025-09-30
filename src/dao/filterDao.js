@@ -222,7 +222,6 @@ class FilterDao {
         obj['selected'] = false;
         returnTab.push(obj);
       }      
-
       logger.info(`${returnTab.length} filters nafs`);
 
       return returnTab;
