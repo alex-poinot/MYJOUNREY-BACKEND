@@ -38,6 +38,7 @@ class LogDao {
     let champ = log.champ;
     let valeur = log.valeur;
     let periode = log.periode;
+    let mailPriseProfil = log.mailPriseProfil;
 
     try {
       const queries = await this.loadQueries();
@@ -54,6 +55,7 @@ class LogDao {
       request.input('ChampParam', sql.NVarChar, champ);
       request.input('ValeurParam', sql.NVarChar, valeur);
       request.input('PeriodeParam', sql.NVarChar, periode);
+      request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
       const result = await request.query(query);
 
@@ -73,6 +75,7 @@ class LogDao {
     let champ = log.champ;
     let valeur = log.valeur;
     let periode = log.periode;
+    let mailPriseProfil = log.mailPriseProfil;
 
     try {
       const queries = await this.loadQueries();
@@ -89,6 +92,7 @@ class LogDao {
       request.input('ChampParam', sql.NVarChar, champ);
       request.input('ValeurParam', sql.NVarChar, valeur);
       request.input('PeriodeParam', sql.NVarChar, periode);
+      request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
       const result = await request.query(query);
 

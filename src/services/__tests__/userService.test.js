@@ -78,40 +78,4 @@ describe('UserService', () => {
       });
     });
   });
-
-  // // Tests pour les méthodes commentées dans le service
-  // describe('getUserById (méthode commentée)', () => {
-  //   it('devrait être implémentée dans le futur', () => {
-  //     // Cette méthode est commentée dans le service
-  //     expect(userService.getUserById).toBeUndefined();
-  //   });
-  // });
-
-  // describe('createUser (méthode commentée)', () => {
-  //   it('devrait être implémentée dans le futur', () => {
-  //     // Cette méthode est commentée dans le service
-  //     expect(userService.createUser).toBeUndefined();
-  //   });
-  // });
-
-  // describe('updateUser (méthode commentée)', () => {
-  //   it('devrait être implémentée dans le futur', () => {
-  //     // Cette méthode est commentée dans le service
-  //     expect(userService.updateUser).toBeUndefined();
-  //   });
-  // });
-
-  // describe('deleteUser (méthode commentée)', () => {
-  //   it('devrait être implémentée dans le futur', () => {
-  //     // Cette méthode est commentée dans le service
-  //     expect(userService.deleteUser).toBeUndefined();
-  //   });
-  // });
-
-  // describe('validateUserData (méthode commentée)', () => {
-  //   it('devrait être implémentée dans le futur', () => {
-  //     // Cette méthode est commentée dans le service
-  //     expect(userService.validateUserData).toBeUndefined();
-  //   });
-  // });
 });

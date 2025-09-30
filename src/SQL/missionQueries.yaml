@@ -24,12 +24,12 @@ getAllMissionsDashboard: |
     UNION ALL
     SELECT 'Groupe' AS SourcePossible
   ), MyListeDroitMission AS (
-    SELECT DM.DTMISS_Source,
+    SELECT '' AS DTMISS_Source,
       DM.DTMISS_MissionId,
-      DM.DTMISS_ProfilId,
+      DM.DTMISS_ProfilMyJourney AS DTMISS_ProfilId,
       SP.SourcePossible
     from DROITS_MISSION DM, MySourcePossible SP
-    WHERE DM.DTMISS_Actif = 'oui'
+    WHERE DM.DTMISS_Droit_Actif = 'oui'
       and DM.DTMISS_UsrMail = @Mail
   )
 
@@ -44,7 +44,18 @@ getAllMissionsDashboard: |
     LDM.SourcePossible,
     LS.MODSTAT_Status,
     LS.MODSTAT_ModuleId,
-    M.MOD_MouleLibelle
+    M.MOD_ModuleLibelle,
+    MD.BUREAU_ID,
+    MD.MD_RESP_PRINCIPAL_MISS_SIRH,
+    MD.MD_MISSION,
+    MD.MD_MILLESIME,
+    MD.MD_ETAT,
+    D.DOS_BUREAU,
+    D.DOS_ASSOCIE_SIRH,
+    D.DOS_ETAT,
+    D.NAF_ID,
+    D.DOS_MOIS_CLOTURE,
+    D.DOS_FORME_JURIDIQUE
   from MyListeDroitMission LDM
   LEFT JOIN ref_MISSION_DOSSIER MD ON MD.CODE_AFFAIRE = lDM.DTMISS_MissionId
   LEFT JOIN ref_DOSSIER D ON D.DOS_PGI = MD.DOS_PGI

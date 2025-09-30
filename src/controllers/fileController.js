@@ -36,7 +36,7 @@ class FileController {
     logger.info(`Controller: Requête POST /deleteModuleFile`);
 
     const moduleFile = req.body;
-    const result = await this.fileService.deleteModuleFile(moduleFile.fileId, moduleFile.email, moduleFile.source, moduleFile.missionIdDosPgiDosGroupe, moduleFile.module);
+    const result = await this.fileService.deleteModuleFile(moduleFile.fileId, moduleFile.email, moduleFile.source, moduleFile.missionIdDosPgiDosGroupe, moduleFile.module, moduleFile.mailPriseProfil);
 
     res.status(200).json({
       ...result,

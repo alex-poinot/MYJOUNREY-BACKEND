@@ -8,5 +8,4 @@ const fileController = new FileController();
 router.post('/setModuleFile', fileController.setModuleFile);
 router.get('/getModuleFiles/:missionIdDosPgiDosGroupe&:module&:profilId&:source', fileController.getModuleFiles);
 router.post('/deleteModuleFile', fileController.deleteModuleFile);
-
 export default router;

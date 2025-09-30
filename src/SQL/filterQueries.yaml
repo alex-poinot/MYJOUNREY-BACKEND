@@ -1,0 +1,35 @@
+getAllGroupesFilter: |
+  select distinct DOS_SOCIETEGROUPE, DOS_SOCIETEGROUPELIBELLE 
+  from ref_DOSSIER
+  ORDER BY DOS_SOCIETEGROUPE;
+
+getAllDossiersFilter: |
+  select distinct DOS_PGI, DOS_NOM 
+  from ref_DOSSIER
+  ORDER BY DOS_PGI;
+
+getAllBureauxFilter: |
+  select BUR_Id, BUR_Libelle 
+  from ref_BUREAU
+  ORDER BY BUR_Libelle;
+
+getAllMissionsFilter: |
+  select DISTINCT MD_MISSION, LIBELLE_MISSIONS
+  from ref_MISSION_DOSSIER
+  ORDER BY MD_MISSION;
+
+getAllMillesimesFilter: |
+  select DISTINCT MD_MILLESIME
+  from ref_MISSION_DOSSIER
+  ORDER BY MD_MILLESIME;
+
+getAllFormesJuridiqueFilter: |
+  select DISTINCT DOS_FORME_JURIDIQUE
+  from ref_DOSSIER
+  where DOS_FORME_JURIDIQUE <> ''
+  ORDER BY DOS_FORME_JURIDIQUE;
+
+getAllNafsFilter: |
+  select NAF_ID, NAF_LIBELLE
+  from ref_NAF_CODE
+  ORDER BY NAF_ID;

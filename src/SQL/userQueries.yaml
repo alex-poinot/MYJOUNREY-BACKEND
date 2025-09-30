@@ -1,8 +1,13 @@
 getAllUsers: |
-  SELECT USR_ID, 
-    CONCAT(USR_PRENOM, ' ', USR_NOM) as USR_NOM, 
-    USR_MAIL, 
-    USR_DATE_DEBUT, 
-    USR_UPDATE_DATE 
+  SELECT CONCAT(USR_PRENOM, ' ', USR_NOM) as USR_NOM, 
+    USR_MAIL
   FROM ref_UTILISATEUR 
-  ORDER BY USR_ID
+  ORDER BY CONCAT(USR_PRENOM, ' ', USR_NOM)
+
+
+getAllAdminUsers: |
+  select pu.PRUT_UsrMail AS MailAdminUser,
+    pu.PRUT__MatriculeId AS MatriculeAdminUser
+  from profil_utilisateur pu
+  left join PROFIL p on p.PRO_ProfilId = pu.PRUT_ProfilId
+  where p.PRO_ProfilLibelle = 'Administrateur'

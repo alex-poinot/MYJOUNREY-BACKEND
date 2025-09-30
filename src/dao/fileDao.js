@@ -16,6 +16,7 @@ class FileDao {
     this.queries = null;
   }
   
+
   async loadQueries() {
     if (!this.queries) {
       try {
@@ -39,12 +40,19 @@ class FileDao {
     let title = moduleFile.title;
     let source = moduleFile.source;
     let categorie = moduleFile.categorie;
+    let mailPriseProfil = moduleFile.mailPriseProfil;
 
-    
+
     if (source === 'Mission') {
       try {
         const queries = await this.loadQueries();
-        const query = queries.setModuleFileMission;
+        let query = '';
+        
+        if(module == 'LAB documentaire') {
+          query = queries.setModuleFileMissionMultipleFile;
+        } else {
+          query = queries.setModuleFileMission;
+        }
         logger.info('query', query);
         const pool = await getConnection();
         const request = pool.request();
@@ -55,6 +63,7 @@ class FileDao {
         request.input('MissionIdParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
         request.input('CategorieParam', sql.NVarChar, categorie || null);
+        request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
         const result = await request.query(query);
 
@@ -66,9 +75,9 @@ class FileDao {
           module,
           champ: source,
           valeur: title,
-          periode: null
+          periode: null,
+          mailPriseProfil: mailPriseProfil || null
         });
-
         return result.recordset;
       } catch (error) {
         logger.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -77,7 +86,12 @@ class FileDao {
     } else if(source === 'Dossier') {
       try {
         const queries = await this.loadQueries();
-        const query = queries.setModuleFileDossier;
+        let query = '';
+        if(module == 'LAB documentaire') {
+          query = queries.setModuleFileDossierMultipleFile;
+        } else {
+          query = queries.setModuleFileDossier;
+        }
         logger.info('query', query);
         const pool = await getConnection();
         const request = pool.request();
@@ -88,10 +102,12 @@ class FileDao {
         request.input('DossierParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
         request.input('CategorieParam', sql.NVarChar, categorie || null);
+        request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
+      
         const result = await request.query(query);
 
-        await logDao.setLogMission({
+        await logDao.setLog({
           email,
           dosPgi: missionIdDosPgiDosGroupe,
           modif: 'Ajout fichier dossier',
@@ -99,7 +115,8 @@ class FileDao {
           module,
           champ: source,
           valeur: title,
-          periode: null
+          periode: null,
+          mailPriseProfil: mailPriseProfil || null
         });
 
         return result.recordset;
@@ -110,7 +127,12 @@ class FileDao {
     } else if(source === 'Groupe') {
       try {
         const queries = await this.loadQueries();
-        const query = queries.setModuleFileGroupe;
+        let query = '';
+        if(module == 'LAB documentaire') {
+          query = queries.setModuleFileGroupeMultipleFile;
+        } else {
+          query = queries.setModuleFileGroupe;
+        }
         logger.info('query', query);
         const pool = await getConnection();
         const request = pool.request();
@@ -121,6 +143,7 @@ class FileDao {
         request.input('GroupeParam', sql.NVarChar, missionIdDosPgiDosGroupe);
         request.input('TitleParam', sql.NVarChar, title);
         request.input('CategorieParam', sql.NVarChar, categorie || null);
+        request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
         const result = await request.query(query);
 
@@ -132,7 +155,8 @@ class FileDao {
           module,
           champ: source,
           valeur: title,
-          periode: null
+          periode: null,
+          mailPriseProfil: mailPriseProfil || null
         });
         return result.recordset;
       } catch (error) {
@@ -202,7 +226,7 @@ class FileDao {
     }
   }
 
-  async deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module) {
+  async deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil) {
     try {
       const queries = await this.loadQueries();
       const query = queries.deleteModuleFile;
@@ -223,7 +247,8 @@ class FileDao {
           module,
           champ: source,
           valeur: fileId.toString(),
-          periode: null
+          periode: null,
+          mailPriseProfil: mailPriseProfil || null
         });
       } else {
         await logDao.setLogMission({
@@ -234,7 +259,8 @@ class FileDao {
           module,
           champ: source,
           valeur: fileId.toString(),
-          periode: null
+          periode: null,
+          mailPriseProfil: mailPriseProfil || null
         });
       }
       return result.recordset;

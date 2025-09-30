@@ -2,8 +2,8 @@ setLog: |
   DECLARE @mail varchar(250) = @MailParam;
   DECLARE @matricule varchar(50) = (SELECT TOP 1 USR_UNIQUE_ID FROM ref_UTILISATEUR WHERE USR_MAIL = @mail);
 
-  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode)
-  VALUES (@matricule,@mail,@DosPgiParam,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam);
+  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode, LOG_PriseProfilMail)
+  VALUES (@matricule,@mail,@DosPgiParam,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam, @MailPriseProfilParam);
 
 setLogMission: |
   DECLARE @mail varchar(250) = @MailParam;
@@ -11,8 +11,8 @@ setLogMission: |
   DECLARE @matricule varchar(50) = (SELECT TOP 1 USR_UNIQUE_ID FROM ref_UTILISATEUR WHERE USR_MAIL = @mail);
   DECLARE @dosPgi varchar(50) = (SELECT TOP 1 DOS_PGI FROM ref_MISSION_DOSSIER WHERE CODE_AFFAIRE = @missionId);
 
-  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_MissionId, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode)
-  VALUES (@matricule,@mail,@dosPgi,@missionId,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam);
+  INSERT INTO LOG (LOG_MatriculeId, LOG_UsrMail, DOS_PGI, LOG_MissionId, LOG_Modif, LOG_Date, LOG_Time, LOG_TypeModif, LOG_Module, LOG_Champ, LOG_Valeur, LOG_Periode, LOG_PriseProfilMail)
+  VALUES (@matricule,@mail,@dosPgi,@missionId,@ModifParam,GETDATE(), GETDATE(), @TypeModifParam, @ModuleParam, @ChampParam, @ValeurParam, @PeriodeParam, @MailPriseProfilParam);
 
 setLogConnexion: |
   DECLARE @mail varchar(250) = @MailParam;

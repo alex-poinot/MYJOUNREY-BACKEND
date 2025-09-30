@@ -40,10 +40,10 @@ class FileService {
     }
   }
 
-  async deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module) {
+  async deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil) {
     try {
       logger.info(`Service: Tentative de suppression du fichier avec l'ID ${fileId}`);
-      const result = await this.fileDao.deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module);
+      const result = await this.fileDao.deleteModuleFile(fileId, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil);
       return {
         success: true,
         data: result

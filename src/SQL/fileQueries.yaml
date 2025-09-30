@@ -4,7 +4,7 @@ setModuleFileMission: |
   declare @modId int;
   declare @missionId varchar(100) = @MissionIdParam;
   declare @categorie varchar(100) = @CategorieParam;
-  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
 
@@ -16,7 +16,19 @@ setModuleFileMission: |
     AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
 
 
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @missionId, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission', @categorie);
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @missionId, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission', @categorie, @MailPriseProfilParam);
+
+setModuleFileMissionMultipleFile: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  declare @missionId varchar(100) = @MissionIdParam;
+  declare @categorie varchar(100) = @CategorieParam;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_MissionId, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @missionId, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Mission', @categorie, @MailPriseProfilParam);
 
 setModuleFileDossier: |
   declare @str varchar(max);
@@ -24,7 +36,7 @@ setModuleFileDossier: |
   declare @modId int;
   declare @dosPgi varchar(100) = @DossierParam;
   declare @categorie varchar(100) = @CategorieParam;
-  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
 
@@ -35,7 +47,19 @@ setModuleFileDossier: |
     AND MODFILE_ModuleId = @modId
     AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
 
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @dosPgi, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier', @categorie);
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @dosPgi, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier', @categorie, @MailPriseProfilParam);
+
+setModuleFileDossierMultipleFile: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  declare @dosPgi varchar(100) = @DossierParam;
+  declare @categorie varchar(100) = @CategorieParam;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosPgi, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @dosPgi, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Dossier', @categorie, @MailPriseProfilParam);
 
 setModuleFileGroupe: |
   declare @str varchar(max);
@@ -43,7 +67,7 @@ setModuleFileGroupe: |
   declare @modId int;
   declare @dosGroupe varchar(100) = @GroupeParam;
   declare @categorie varchar(100) = @CategorieParam;
-  set @modId = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   set @str = @FileParam;
   set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
 
@@ -54,11 +78,23 @@ setModuleFileGroupe: |
     AND MODFILE_ModuleId = @modId
     AND (@categorie is null OR MODFILE_FileCategorie = @categorie)
 
-  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie) values (@modId, @dosGroupe, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe', @categorie);
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @dosGroupe, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe', @categorie, @MailPriseProfilParam);
+
+setModuleFileGroupeMultipleFile: |
+  declare @str varchar(max);
+  declare @bin varbinary(max);
+  declare @modId int;
+  declare @dosGroupe varchar(100) = @GroupeParam;
+  declare @categorie varchar(100) = @CategorieParam;
+  set @modId = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
+  set @str = @FileParam;
+  set @bin = (select cast(N'' as xml).value('xs:base64Binary(sql:variable("@str"))', 'varbinary(max)'));
+
+  insert into MODULE_FILE (MODFILE_ModuleId, MODFILE_DosGroupe, MODFILE_File, MODFILE_DateDepot, MODFILE_DateExpiration, MODFILE_UsrMail, MODFILE_ROWGUID, MODFILE_Title, MODFILE_Niveau, MODFILE_FileCategorie, MODFILE_PriseProfilMail) OUTPUT inserted.MODFILE_Id values (@modId, @dosGroupe, @bin, getdate(), DATEADD(YEAR, 1, GETDATE()),  @MailParam, NEWID(), @TitleParam, 'Groupe', @categorie, @MailPriseProfilParam);
 
 getModuleFilesMission: |
   declare @missionId VARCHAR(30) = @MissionIdParam;
-  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   declare @profilId int = @ProfilIdParam;
 
   WITH MyListFichiers AS (
@@ -92,7 +128,7 @@ getModuleFilesMission: |
 
 getModuleFilesDossier: |
   declare @dossier VARCHAR(30) = @DossierParam;
-  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   declare @profilId int = @ProfilIdParam;
 
   WITH MyListFichiers AS (
@@ -126,7 +162,7 @@ getModuleFilesDossier: |
 
 getModuleFilesGroupe: |
   declare @groupe VARCHAR(30) = @GroupeParam;
-  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_MouleLibelle = @ModuleParam);
+  declare @moduleId int = (select MOD_ModuleId from MODULE where MOD_ModuleLibelle = @ModuleParam);
   declare @profilId int = @ProfilIdParam;
 
   WITH MyListFichiers AS (

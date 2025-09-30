@@ -83,7 +83,6 @@ class MissionDao {
             }
           };
         }
-        
 
         const g = grouped[key];
         const m = row.MODSTAT_ModuleId;
