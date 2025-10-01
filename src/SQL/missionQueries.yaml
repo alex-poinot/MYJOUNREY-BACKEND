@@ -50,6 +50,8 @@ getAllMissionsDashboard: |
     MD.MD_MISSION,
     MD.MD_MILLESIME,
     MD.MD_ETAT,
+    MD.MD_DMCM_SIRH,
+    MD.MD_FACTUREUR_SIRH,
     D.DOS_BUREAU,
     D.DOS_ASSOCIE_SIRH,
     D.DOS_ETAT,
@@ -66,7 +68,6 @@ getAllMissionsDashboard: |
       OR (LDM.SourcePossible = 'Groupe' AND LS.MODSTAT_Jointure = D.DOS_SOCIETEGROUPE)
     )
   LEFT JOIN MODULE M ON M.MOD_ModuleId = LS.MODSTAT_ModuleId
-  WHERE MD.MD_ETAT = 'ENC'
   ORDER BY D.DOS_SOCIETEGROUPE, 
     MD.DOS_PGI, 
     CONCAT(MD.MD_MISSION, ' - ', MD.MD_MILLESIME)

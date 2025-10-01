@@ -33,3 +33,27 @@ getAllNafsFilter: |
   select NAF_ID, NAF_LIBELLE
   from ref_NAF_CODE
   ORDER BY NAF_ID;
+
+getAllDmcmFactFilter: |
+  WITH MyListDmcmFact AS (
+    select MD_DMCM_SIRH AS CODE_SIRH
+    from ref_MISSION_DOSSIER
+    where MD_DMCM_SIRH IS not null
+
+    UNION ALL
+
+    select MD_FACTUREUR_SIRH AS CODE_SIRH
+    from ref_MISSION_DOSSIER
+    where MD_FACTUREUR_SIRH IS not null
+  )
+
+  SELECT DISTINCT USR_UNIQUE_ID, UPPER(USR_FullName) AS USR_FullName
+  FROM ref_UTILISATEUR U
+  INNER JOIN MyListDmcmFact LDF ON LDF.CODE_SIRH = U.USR_UNIQUE_ID
+  ORDER BY UPPER(USR_FullName);
+
+getAllAssociesFilter: |
+  SELECT DISTINCT USR_UNIQUE_ID, UPPER(USR_FullName) AS USR_FullName
+  FROM ref_UTILISATEUR
+  WHERE USR_GRADE in ('A0','A1','A2')
+  ORDER BY UPPER(USR_FullName);

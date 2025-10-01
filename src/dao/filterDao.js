@@ -101,7 +101,7 @@ class FilterDao {
 
       for (const row of result.recordset) {
         let obj = new Object();
-        obj['value'] = row.BUR_Id;
+        obj['value'] = row.BUR_Id.toString().trim();
         obj['label'] = row.BUR_Libelle.trim();
         obj['selected'] = false;
         returnTab.push(obj);
@@ -130,8 +130,8 @@ class FilterDao {
 
       for (const row of result.recordset) {
         let obj = new Object();
-        obj['value'] = row.MD_MISSION;
-        obj['label'] = row.MD_MISSION + ' - ' + row.LIBELLE_MISSIONS.trim();
+        obj['value'] = row.MD_MISSION.toString().trim();
+        obj['label'] = row.MD_MISSION.toString().trim() + ' - ' + row.LIBELLE_MISSIONS.trim();
         obj['selected'] = false;
         returnTab.push(obj);
       }      
@@ -159,8 +159,8 @@ class FilterDao {
 
       for (const row of result.recordset) {
         let obj = new Object();
-        obj['value'] = row.MD_MILLESIME;
-        obj['label'] = row.MD_MILLESIME;
+        obj['value'] = row.MD_MILLESIME.toString().trim();
+        obj['label'] = row.MD_MILLESIME.toString().trim();
         obj['selected'] = false;
         returnTab.push(obj);
       }      
@@ -217,8 +217,8 @@ class FilterDao {
 
       for (const row of result.recordset) {
         let obj = new Object();
-        obj['value'] = row.NAF_ID;
-        obj['label'] = row.NAF_ID + ' - ' + row.NAF_LIBELLE.trim();
+        obj['value'] = row.NAF_ID.trim();
+        obj['label'] = row.NAF_ID.trim() + ' - ' + row.NAF_LIBELLE.trim();
         obj['selected'] = false;
         returnTab.push(obj);
       }      
@@ -228,6 +228,62 @@ class FilterDao {
     } catch (err) {
       logger.error('Erreur getAllNafsFilter : ', err);
       throw new Error('Erreur lors de la récupération des filters pour les nafs');
+    }
+  }
+
+  async getAllDmcmFactFilter() {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getAllDmcmFactFilter;
+      const pool = await getConnection();
+      const request = pool.request();
+
+      const result = await request.query(query);
+      logger.info(`${result.recordset.length} lignes récupérées`);
+
+      let returnTab = [];
+
+      for (const row of result.recordset) {
+        let obj = new Object();
+        obj['value'] = row.USR_UNIQUE_ID.trim();
+        obj['label'] = row.USR_FullName.trim();
+        obj['selected'] = false;
+        returnTab.push(obj);
+      }      
+      logger.info(`${returnTab.length} filters dmcm fact`);
+
+      return returnTab;
+    } catch (err) {
+      logger.error('Erreur getAllDmcmFactFilter : ', err);
+      throw new Error('Erreur lors de la récupération des filters pour les dmcm fact');
+    }
+  }
+
+  async getAllAssociesFilter() {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getAllAssociesFilter;
+      const pool = await getConnection();
+      const request = pool.request();
+
+      const result = await request.query(query);
+      logger.info(`${result.recordset.length} lignes récupérées`);
+
+      let returnTab = [];
+
+      for (const row of result.recordset) {
+        let obj = new Object();
+        obj['value'] = row.USR_UNIQUE_ID.trim();
+        obj['label'] = row.USR_FullName.trim();
+        obj['selected'] = false;
+        returnTab.push(obj);
+      }      
+      logger.info(`${returnTab.length} filters associes`);
+
+      return returnTab;
+    } catch (err) {
+      logger.error('Erreur getAllAssociesFilter : ', err);
+      throw new Error('Erreur lors de la récupération des filters pour les associes');
     }
   }
 

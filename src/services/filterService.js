@@ -138,6 +138,42 @@ class FilterService {
       };
     }
   }
+
+  async getAllDmcmFactFilter() {
+    try {
+      logger.info(`Service: Récupération de tous les filters pour les dmcm fact`);
+      const filters = await this.filterDao.getAllDmcmFactFilter();
+      return {
+        success: true,
+        data: filters,
+        count: filters.length
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de la récupération des filters pour les dmcm fact:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de la récupération des filters pour les dmcm fact'
+      };
+    }
+  }
+
+  async getAllAssociesFilter() {
+    try {
+      logger.info(`Service: Récupération de tous les filters pour les associes`);
+      const filters = await this.filterDao.getAllAssociesFilter();
+      return {
+        success: true,
+        data: filters,
+        count: filters.length
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de la récupération des filters pour les associes:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de la récupération des filters pour les associes'
+      };
+    }
+  }
 }
 
 export default FilterService;

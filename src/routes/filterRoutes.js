@@ -12,5 +12,7 @@ router.get('/getAllMissionsFilter', filterController.getAllMissionsFilter);
 router.get('/getAllMillesimesFilter', filterController.getAllMillesimesFilter);
 router.get('/getAllFormesJuridiqueFilter', filterController.getAllFormesJuridiqueFilter);
 router.get('/getAllNafsFilter', filterController.getAllNafsFilter);
+router.get('/getAllDmcmFactFilter', filterController.getAllDmcmFactFilter);
+router.get('/getAllAssociesFilter', filterController.getAllAssociesFilter);
 
 export default router;

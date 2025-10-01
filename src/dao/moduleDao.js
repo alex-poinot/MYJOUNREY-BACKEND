@@ -95,8 +95,11 @@ class ModuleDao {
       request.input('MailPriseProfilParam', sql.NVarChar, mailPriseProfil || null);
 
       const result = await request.query(query);
-
-      await logDao.setLogMission(objLog);
+      if (source === 'Mission') {
+        await logDao.setLogMission(objLog);
+      } else {
+        await logDao.setLog(objLog);
+      }
       return result.recordset;
     } catch (error) {
       logger.error('Erreur lors de l\'envoie du status:', error);

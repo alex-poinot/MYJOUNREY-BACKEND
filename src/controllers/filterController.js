@@ -83,6 +83,28 @@ class FilterController {
       timestamp: new Date().toISOString()
     });
   });
+
+  getAllDmcmFactFilter = asyncHandler(async (req, res) => {
+    logger.info(`Controller: Requête GET /getAllDmcmFactFilter`);
+
+    const result = await this.filterService.getAllDmcmFactFilter();
+
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getAllAssociesFilter = asyncHandler(async (req, res) => {
+    logger.info(`Controller: Requête GET /getAllAssociesFilter`);
+
+    const result = await this.filterService.getAllAssociesFilter();
+
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
 }
 
 export default FilterController;

@@ -147,7 +147,7 @@ class FileDao {
 
         const result = await request.query(query);
 
-        await logDao.setLogMission({
+        await logDao.setLog({
           email,
           dosPgi: missionIdDosPgiDosGroupe,
           modif: 'Ajout fichier groupe',
