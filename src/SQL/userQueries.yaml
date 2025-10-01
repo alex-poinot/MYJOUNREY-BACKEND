@@ -7,7 +7,7 @@ getAllUsers: |
 
 getAllAdminUsers: |
   select pu.PRUT_UsrMail AS MailAdminUser,
-    pu.PRUT__MatriculeId AS MatriculeAdminUser
+    pu.PRUT_MatriculeId AS MatriculeAdminUser
   from profil_utilisateur pu
   left join PROFIL p on p.PRO_ProfilId = pu.PRUT_ProfilId
   where p.PRO_ProfilLibelle = 'Administrateur'

@@ -36,9 +36,8 @@ class UserDao {
       logger.info('query',query);
       const pool = await getConnection();
       const request = pool.request();
-
       const result = await request.query(query);
-      
+
       return result.recordset;
     } catch (error) {
       logger.error('Erreur lors de la récupération des utilisateurs:', error);
