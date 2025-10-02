@@ -79,12 +79,24 @@ class MissionDao {
               qac: '',
               qam: '',
               ldm: '',
+              labGroupeAccess: '',
+              labDossierAccess: '',
+              cartoLabGroupeAccess: '',
+              cartoLabDossierAccess: '',
+              conflitCheckAccess: '',
+              qacAccess: '',
+              qamAccess: '',
+              ldmAccess: ''
             },
             pendantMission: {
               nog: '',
               checklist: '',
               revision: '',
               supervision: '',
+              nogAccess: '',
+              checklistAccess: '',
+              revisionAccess: '',
+              supervisionAccess: ''
             },
             finMission: {
               cr: '',
@@ -93,35 +105,43 @@ class MissionDao {
               plaquette: '',
               restitution: '',
               finRelationClient: '',
+              crAccess: '',
+              ndsAccess: '',
+              qmmAccess: '',
+              plaquetteAccess: '',
+              restitutionAccess: '',
+              finRelationClientAccess: ''
             }
           };
         }
 
         const g = grouped[key];
-        const m = row.MODSTAT_ModuleId;
+        const m = row.MOD_ModuleId;
         const s = row.SourcePossible;
         const e = row.MODSTAT_Status;
+        const ml = row.DTMOD_ModuleLecture;
+        const mm = row.DTMOD_ModuleModification; 
 
-        if (s === 'Groupe' && m === 2) g.avantMission.labGroupe = e;
-        if (s === 'Dossier' && m === 2) g.avantMission.labDossier = e;
-        if (s === 'Groupe' && m === 3) g.avantMission.cartoLabGroupe = e;
-        if (s === 'Dossier' && m === 3) g.avantMission.cartoLabDossier = e;
-        if (s === 'Dossier' && m === 1) g.avantMission.conflitCheck = e;
-        if (s === 'Dossier' && m === 4) g.avantMission.qac = e;
-        if (s === 'Mission' && m === 5) g.avantMission.qam = e;
-        if (s === 'Mission' && m === 6) g.avantMission.ldm = e;
+        if (s === 'Groupe' && m === 2) {g.avantMission.labGroupe = e; g.avantMission.labGroupeAccess = this.getAccessString(ml, mm);}
+        if (s === 'Dossier' && m === 2) {g.avantMission.labDossier = e; g.avantMission.labDossierAccess = this.getAccessString(ml, mm);}
+        if (s === 'Groupe' && m === 3) {g.avantMission.cartoLabGroupe = e; g.avantMission.cartoLabGroupeAccess = this.getAccessString(ml, mm);}
+        if (s === 'Dossier' && m === 3) {g.avantMission.cartoLabDossier = e; g.avantMission.cartoLabDossierAccess = this.getAccessString(ml, mm);}
+        if (s === 'Dossier' && m === 1) {g.avantMission.conflitCheck = e; g.avantMission.conflitCheckAccess = this.getAccessString(ml, mm);}
+        if (s === 'Dossier' && m === 4) {g.avantMission.qac = e; g.avantMission.qacAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 5) {g.avantMission.qam = e; g.avantMission.qamAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 6) {g.avantMission.ldm = e; g.avantMission.ldmAccess = this.getAccessString(ml, mm);}
 
-        if (s === 'Mission' && m === 7) g.pendantMission.nog = e;
-        if (s === 'Mission' && m === 8) g.pendantMission.checklist = e;
-        if (s === 'Mission' && m === 9) g.pendantMission.revision = e;
-        if (s === 'Mission' && m === 10) g.pendantMission.supervision = e;
+        if (s === 'Mission' && m === 7) {g.pendantMission.nog = e; g.pendantMission.nogAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 8) {g.pendantMission.checklist = e; g.pendantMission.checklistAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 9) {g.pendantMission.revision = e; g.pendantMission.revisionAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 10) {g.pendantMission.supervision = e; g.pendantMission.supervisionAccess = this.getAccessString(ml, mm);}
 
-        if (s === 'Mission' && m === 12) g.finMission.cr = e;
-        if (s === 'Mission' && m === 11) g.finMission.nds = e;
-        if (s === 'Mission' && m === 13) g.finMission.qmm = e;
-        if (s === 'Mission' && m === 14) g.finMission.plaquette = e;
-        if (s === 'Mission' && m === 15) g.finMission.restitution = e;
-        if (s === 'Mission' && m === 16) g.finMission.finRelationClient = e;
+        if (s === 'Mission' && m === 12) {g.finMission.cr = e; g.finMission.crAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 11) {g.finMission.nds = e; g.finMission.ndsAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 13) {g.finMission.qmm = e; g.finMission.qmmAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 14) {g.finMission.plaquette = e; g.finMission.plaquetteAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 15) {g.finMission.restitution = e; g.finMission.restitutionAccess = this.getAccessString(ml, mm);}
+        if (s === 'Mission' && m === 16) {g.finMission.finRelationClient = e; g.finMission.finRelationClientAccess = this.getAccessString(ml, mm);}
       }
 
       const final = Object.values(grouped).map(m => {
@@ -147,6 +167,16 @@ class MissionDao {
     } catch (err) {
       logger.error('Erreur getAllMissionsDashboard : ', err);
       throw new Error('Erreur lors de la récupération des missions pour le tableau de bord');
+    }
+  }
+
+  getAccessString(ml, mm) {
+    if(ml == 'oui' && mm == 'oui') {
+      return 'modif';
+    } else if(ml == 'oui' && mm == 'non') {
+      return 'lecture';
+    } else {
+      return 'noaccess';
     }
   }
 

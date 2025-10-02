@@ -1,73 +1,85 @@
 getAllMissionsDashboard: |
   DECLARE @Mail VARCHAR(250) = @MailParam;
 
-  WITH MyListStatus AS (
-    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosGroupe AS MODSTAT_Jointure
-    FROM MODULE_STATUS
-    WHERE MODSTAT_Niveau = 'Groupe'
-
-    UNION ALL
-
-    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_DosPgi AS MODSTAT_Jointure
-    FROM MODULE_STATUS
-    WHERE MODSTAT_Niveau = 'Dossier'
-
-    UNION ALL
-
-    SELECT MODSTAT_Niveau, MODSTAT_Status, MODSTAT_ModuleId, MODSTAT_MissionId AS MODSTAT_Jointure
-    FROM MODULE_STATUS
-    WHERE MODSTAT_Niveau = 'Mission'
-  ), MySourcePossible AS (
-    SELECT 'Mission' AS SourcePossible
-    UNION ALL 
-    SELECT 'Dossier' AS SourcePossible
-    UNION ALL
-    SELECT 'Groupe' AS SourcePossible
-  ), MyListeDroitMission AS (
-    SELECT '' AS DTMISS_Source,
-      DM.DTMISS_MissionId,
-      DM.DTMISS_ProfilMyJourney AS DTMISS_ProfilId,
-      SP.SourcePossible
-    from DROITS_MISSION DM, MySourcePossible SP
-    WHERE DM.DTMISS_Droit_Actif = 'oui'
-      and DM.DTMISS_UsrMail = @Mail
+  ;WITH MyListStatus AS (
+      SELECT 
+          MODSTAT_Niveau, 
+          MODSTAT_Status, 
+          MODSTAT_ModuleId,
+          CASE MODSTAT_Niveau
+              WHEN 'Groupe'  THEN MODSTAT_DosGroupe
+              WHEN 'Dossier' THEN MODSTAT_DosPgi
+              WHEN 'Mission' THEN MODSTAT_MissionId
+          END AS MODSTAT_Jointure
+      FROM MODULE_STATUS
+      WHERE MODSTAT_Niveau IN ('Groupe','Dossier','Mission')
+  ),
+  MySourcePossible AS (
+      SELECT v.SourcePossible
+      FROM (VALUES ('Mission'),('Dossier'),('Groupe')) v(SourcePossible)
+  ),
+  MyListeDroitMission AS (
+      SELECT 
+          '' AS DTMISS_Source,
+          DM.DTMISS_MissionId,
+          DM.DTMISS_ProfilMyJourney AS DTMISS_ProfilId,
+          SP.SourcePossible,
+          DM.DTMISS_ProfilMyJourney,
+          M.MOD_ModuleId,
+          M.MOD_ModuleLibelle
+      FROM DROITS_MISSION DM
+      CROSS JOIN MySourcePossible SP
+      INNER JOIN MODULE M ON 1=1
+      WHERE DM.DTMISS_Droit_Actif = 'oui'
+        AND DM.DTMISS_UsrMail = @Mail
   )
-
-  SELECT D.DOS_SOCIETEGROUPE, 
-    D.DOS_SOCIETEGROUPELIBELLE, 
-    MD.DOS_PGI, 
-    D.DOS_NOM, 
-    CONCAT(MD.MD_MISSION, ' - ', MD.LIBELLE_MISSIONS, ' - ', MD.MD_MILLESIME) AS MISSION, 
-    LDM.DTMISS_Source,
-    LDM.DTMISS_MissionId,
-    LDM.DTMISS_ProfilId,
-    LDM.SourcePossible,
-    LS.MODSTAT_Status,
-    LS.MODSTAT_ModuleId,
-    M.MOD_ModuleLibelle,
-    MD.BUREAU_ID,
-    MD.MD_RESP_PRINCIPAL_MISS_SIRH,
-    MD.MD_MISSION,
-    MD.MD_MILLESIME,
-    MD.MD_ETAT,
-    MD.MD_DMCM_SIRH,
-    MD.MD_FACTUREUR_SIRH,
-    D.DOS_BUREAU,
-    D.DOS_ASSOCIE_SIRH,
-    D.DOS_ETAT,
-    D.NAF_ID,
-    D.DOS_MOIS_CLOTURE,
-    D.DOS_FORME_JURIDIQUE
-  from MyListeDroitMission LDM
-  LEFT JOIN ref_MISSION_DOSSIER MD ON MD.CODE_AFFAIRE = lDM.DTMISS_MissionId
-  LEFT JOIN ref_DOSSIER D ON D.DOS_PGI = MD.DOS_PGI
-  LEFT JOIN MyListStatus LS ON LS.MODSTAT_Niveau = LDM.SourcePossible
-    AND (
-      (LDM.SourcePossible = 'Dossier' AND LS.MODSTAT_Jointure = D.DOS_PGI) 
-      OR (LDM.SourcePossible = 'Mission' AND LS.MODSTAT_Jointure = MD.CODE_AFFAIRE) 
-      OR (LDM.SourcePossible = 'Groupe' AND LS.MODSTAT_Jointure = D.DOS_SOCIETEGROUPE)
-    )
-  LEFT JOIN MODULE M ON M.MOD_ModuleId = LS.MODSTAT_ModuleId
-  ORDER BY D.DOS_SOCIETEGROUPE, 
-    MD.DOS_PGI, 
-    CONCAT(MD.MD_MISSION, ' - ', MD.MD_MILLESIME)
+  SELECT 
+      D.DOS_SOCIETEGROUPE, 
+      D.DOS_SOCIETEGROUPELIBELLE, 
+      MD.DOS_PGI, 
+      D.DOS_NOM, 
+      CONCAT(MD.MD_MISSION, ' - ', MD.LIBELLE_MISSIONS, ' - ', MD.MD_MILLESIME) AS MISSION, 
+      LDM.DTMISS_Source,
+      LDM.DTMISS_MissionId,
+      LDM.DTMISS_ProfilId,
+      LDM.SourcePossible,
+      LDM.DTMISS_ProfilMyJourney,
+      LS.MODSTAT_Status,
+      LDM.MOD_ModuleId,
+      LDM.MOD_ModuleLibelle,
+      DMO.DTMOD_ModuleLecture,
+      DMO.DTMOD_ModuleModification,
+      MD.BUREAU_ID,
+      MD.MD_RESP_PRINCIPAL_MISS_SIRH,
+      MD.MD_MISSION,
+      MD.MD_MILLESIME,
+      MD.MD_ETAT,
+      MD.MD_DMCM_SIRH,
+      MD.MD_FACTUREUR_SIRH,
+      D.DOS_BUREAU,
+      D.DOS_ASSOCIE_SIRH,
+      D.DOS_ETAT,
+      D.NAF_ID,
+      D.DOS_MOIS_CLOTURE,
+      D.DOS_FORME_JURIDIQUE
+  FROM MyListeDroitMission LDM
+  LEFT JOIN ref_MISSION_DOSSIER MD 
+        ON MD.CODE_AFFAIRE = LDM.DTMISS_MissionId
+  LEFT JOIN ref_DOSSIER D 
+        ON D.DOS_PGI = MD.DOS_PGI
+  LEFT JOIN MyListStatus LS 
+        ON LS.MODSTAT_Niveau = LDM.SourcePossible
+        AND LDM.MOD_ModuleId = LS.MODSTAT_ModuleId
+        AND (
+            (LDM.SourcePossible = 'Dossier' AND LS.MODSTAT_Jointure = D.DOS_PGI) 
+        OR (LDM.SourcePossible = 'Mission' AND LS.MODSTAT_Jointure = MD.CODE_AFFAIRE) 
+        OR (LDM.SourcePossible = 'Groupe'  AND LS.MODSTAT_Jointure = D.DOS_SOCIETEGROUPE)
+        )
+  LEFT JOIN DROITS_MODULE DMO 
+        ON DMO.DTMOD_ModuleId = LDM.MOD_ModuleId 
+        AND DMO.DTMOD_ProfilId = LDM.DTMISS_ProfilMyJourney
+  WHERE D.DOS_PGI IS NOT NULL
+  ORDER BY 
+      D.DOS_SOCIETEGROUPE, 
+      MD.DOS_PGI, 
+      CONCAT(MD.MD_MISSION, ' - ', MD.MD_MILLESIME);
