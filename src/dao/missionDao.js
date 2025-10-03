@@ -144,6 +144,7 @@ class MissionDao {
         if (s === 'Mission' && m === 16) {g.finMission.finRelationClient = e; g.finMission.finRelationClientAccess = this.getAccessString(ml, mm);}
       }
 
+      
       const final = Object.values(grouped).map(m => {
         const a = m.avantMission;
         const p = m.pendantMission;

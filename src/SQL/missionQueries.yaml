@@ -70,7 +70,7 @@ getAllMissionsDashboard: |
         '' AS DTMISS_Source,
         LDM.DTMISS_MissionId,
         LDM.SourcePossible,
-        LDM.DTMISS_ProfilMyJourney,
+        LDM.DTMISS_ProfilMyJourney AS DTMISS_ProfilId,
         LDM.MOD_ModuleId,
         LDM.MOD_ModuleLibelle,
 
