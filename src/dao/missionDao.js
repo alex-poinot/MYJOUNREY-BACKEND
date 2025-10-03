@@ -53,7 +53,7 @@ class MissionDao {
             nomGroupe: row.DOS_SOCIETEGROUPELIBELLE,
             numeroClient: row.DOS_PGI,
             nomClient: row.DOS_NOM,
-            mission: row.MISSION,
+            LIBELLE_MISSIONS: row.LIBELLE_MISSIONS,
             missionId: row.DTMISS_MissionId,
             profilId: row.DTMISS_ProfilId,
             source: row.DTMISS_Source,

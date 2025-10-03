@@ -38,7 +38,7 @@ getAllMissionsDashboard: |
       D.DOS_SOCIETEGROUPELIBELLE, 
       MD.DOS_PGI, 
       D.DOS_NOM, 
-      CONCAT(MD.MD_MISSION, ' - ', MD.LIBELLE_MISSIONS, ' - ', MD.MD_MILLESIME) AS MISSION, 
+      MD.LIBELLE_MISSIONS, 
       LDM.DTMISS_Source,
       LDM.DTMISS_MissionId,
       LDM.DTMISS_ProfilId,
