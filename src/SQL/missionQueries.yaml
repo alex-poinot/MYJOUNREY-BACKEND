@@ -1,4 +1,105 @@
 getAllMissionsDashboard: |
+    DECLARE @Mail VARCHAR(250) = @MailParam;
+
+    ;WITH MyListeDroitMission AS (
+    SELECT 
+    DM.DTMISS_MissionId,
+    DM.DTMISS_ProfilMyJourney
+    FROM DROITS_MISSION DM
+    WHERE DM.DTMISS_Droit_Actif = 'oui'
+    AND DM.DTMISS_UsrMail = @Mail
+    ), MyModuleAffichage as (
+    SELECT 
+    DTMISS_MissionId
+    ,DTMISS_ProfilMyJourney
+    ,[MOD_ModuleId]
+    ,[MOD_ModuleLibelle]
+    ,[MOD_Categorie]
+    ,SourcePossible
+    ,Affichage
+    from
+    (
+    SELECT DTMISS_MissionId
+    , DTMISS_ProfilMyJourney
+    ,[MOD_ModuleId]
+    ,[MOD_ModuleLibelle]
+    ,[MOD_Categorie]
+    ,[MOD_Groupe] AS Groupe
+    ,[MOD_Dossier] AS Dossier
+    ,[MOD_Mission] AS Mission
+    from MyListeDroitMission 
+    inner join [MODULE] on 1 = 1
+    ) as t
+    unpivot (Affichage for SourcePossible in ([Groupe], [Dossier] ,[Mission]))
+        as unpvt
+        
+    where Affichage = 'Oui'
+
+    ), MyListStatus AS (
+        SELECT MODSTAT_Niveau,
+            MODSTAT_ModuleId,
+            CASE MODSTAT_Niveau
+                WHEN 'Groupe'  THEN MODSTAT_DosGroupe
+                WHEN 'Dossier' THEN MODSTAT_DosPgi
+                WHEN 'Mission' THEN MODSTAT_MissionId
+            END AS MODSTAT_Jointure,
+            MODSTAT_Status
+        FROM MODULE_STATUS
+    )
+
+    SELECT D.DOS_SOCIETEGROUPE, 
+        D.DOS_SOCIETEGROUPELIBELLE, 
+        D.DOS_PGI, 
+        D.DOS_NOM, 
+        D.DOS_BUREAU,
+        D.DOS_ASSOCIE_SIRH,
+        D.DOS_ETAT,
+        D.NAF_ID,
+        D.DOS_MOIS_CLOTURE,
+        D.DOS_FORME_JURIDIQUE,
+    
+        MD.LIBELLE_MISSIONS, 
+        MD.BUREAU_ID,
+        MD.MD_RESP_PRINCIPAL_MISS_SIRH,
+        MD.MD_MISSION,
+        MD.MD_MILLESIME,
+        MD.MD_ETAT,
+        MD.MD_DMCM_SIRH,
+        MD.MD_FACTUREUR_SIRH,
+
+        '' AS DTMISS_Source,
+        LDM.DTMISS_MissionId,
+        LDM.SourcePossible,
+        LDM.DTMISS_ProfilMyJourney,
+        LDM.MOD_ModuleId,
+        LDM.MOD_ModuleLibelle,
+
+        LS.MODSTAT_Status,
+        
+        DMO.DTMOD_ModuleLecture,
+        DMO.DTMOD_ModuleModification
+    FROM MyModuleAffichage LDM
+    LEFT JOIN ref_MISSION_DOSSIER MD  ON MD.CODE_AFFAIRE = LDM.DTMISS_MissionId
+    LEFT JOIN ref_DOSSIER D       ON D.DOS_PGI = MD.DOS_PGI
+    LEFT JOIN MyListStatus LS 
+            ON LS.MODSTAT_Niveau = LDM.SourcePossible
+                AND LDM.MOD_ModuleId = LS.MODSTAT_ModuleId
+                AND (
+                (LDM.SourcePossible = 'Dossier' AND LS.MODSTAT_Jointure = D.DOS_PGI) 
+                OR (LDM.SourcePossible = 'Mission' AND LS.MODSTAT_Jointure = MD.CODE_AFFAIRE) 
+                OR (LDM.SourcePossible = 'Groupe'  AND LS.MODSTAT_Jointure = D.DOS_SOCIETEGROUPE)
+                )
+    LEFT JOIN DROITS_MODULE DMO         ON DMO.DTMOD_ModuleId = LDM.MOD_ModuleId 
+            AND DMO.DTMOD_ProfilId = LDM.DTMISS_ProfilMyJourney
+    WHERE D.DOS_PGI IS NOT NULL
+    ORDER BY 
+        D.DOS_SOCIETEGROUPE, 
+        MD.DOS_PGI, 
+        MD.MD_MISSION,
+        MD.MD_MILLESIME
+    OPTION (RECOMPILE);
+
+getAllMissionsDashboardV1: |
   DECLARE @Mail VARCHAR(250) = @MailParam;
 
   ;WITH MyListStatus AS (

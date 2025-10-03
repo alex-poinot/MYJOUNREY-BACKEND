@@ -114,7 +114,7 @@ class MissionDao {
             }
           };
         }
-
+             
         const g = grouped[key];
         const m = row.MOD_ModuleId;
         const s = row.SourcePossible;
