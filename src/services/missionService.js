@@ -24,6 +24,25 @@ class MissionService {
       };
     }
   }
+
+  async getAllMissionAccessModuleEditor(email, module) {
+
+    try {
+      logger.info(`Service: Récupération de toutes les missions pour module ${module} editor : ${email}`);
+      const missions = await this.missionDao.getAllMissionAccessModuleEditor(email, module);
+      return {
+        success: true,
+        data: missions,
+        count: missions.length
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de la récupération des missions pour acces module:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de la récupération des missions pour acces module'
+      };
+    }
+  }
 }
 
 export default MissionService;

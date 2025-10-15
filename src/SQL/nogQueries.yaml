@@ -1,0 +1,18 @@
+getCoordonneesNog: |
+  select d.DOS_PGI, 
+    d.DOS_NOM, 
+    d.NAF_ID, 
+    NC.NAF_LIBELLE, 
+    d.DOS_SIRET, 
+    d.DOS_ADRESSE, 
+    d.DOS_VILLE, 
+    d.DOS_CP
+  from ref_DOSSIER d
+  LEFT JOIN ref_NAF_CODE NC ON NC.NAF_ID = d.NAF_ID
+  WHERE d.DOS_PGI = @DosPgiParam;
+
+getTypeMissionNaureNog: |
+  select MyNogPT_CodeMission as CodeMission,
+    MyNogPT_TypeMission as TypeMission, 
+    MyNogPT_NatureMission as NatureMission
+  from MyNog_PRESMISSION_TYPEMISSION;

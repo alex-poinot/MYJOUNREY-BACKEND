@@ -181,6 +181,25 @@ class MissionDao {
     }
   }
 
+  async getAllMissionAccessModuleEditor(email, module) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getAllMissionAccessModuleEditor;
+      const pool = await getConnection();
+      const request = pool.request();
+
+      request.input('MailParam', sql.VarChar, email);
+      request.input('ModuleParam', sql.VarChar, module);
+      const result = await request.query(query);
+      logger.info(`${result.recordset.length} lignes récupérées`);
+
+      return result.recordset;
+    } catch (err) {
+      logger.error('Erreur getAllMissionAccessModuleEditor : ', err);
+      throw new Error('Erreur lors de la récupération des missions acces module');
+    }
+  }
+
 }
 
 export default MissionDao;

@@ -6,5 +6,6 @@ const missionController = new MissionController();
 
 // GET /api/getAllMissionsDashboard - Récupérer toutes les missions
 router.get('/getAllMissionsDashboard/:email', missionController.getAllMissionsDashboard);
+router.get('/getAllMissionAccessModuleEditor/:email&:module', missionController.getAllMissionAccessModuleEditor);
 
 export default router;

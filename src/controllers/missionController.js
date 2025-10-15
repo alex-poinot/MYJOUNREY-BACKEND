@@ -18,6 +18,18 @@ class MissionController {
       timestamp: new Date().toISOString()
     });
   });
+
+  getAllMissionAccessModuleEditor = asyncHandler(async (req, res) => {
+    const { email, module } = req.params;
+    logger.info(`Controller: Requête GET /getAllMissionAccessModuleEditor/${email}&${module}`);
+
+    const result = await this.missionService.getAllMissionAccessModuleEditor(email, module);
+
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
 }
 
 export default MissionController;
