@@ -11,8 +11,28 @@ getCoordonneesNog: |
   LEFT JOIN ref_NAF_CODE NC ON NC.NAF_ID = d.NAF_ID
   WHERE d.DOS_PGI = @DosPgiParam;
 
-getTypeMissionNaureNog: |
+getTypeMissionNatureNog: |
   select MyNogPT_CodeMission as CodeMission,
     MyNogPT_TypeMission as TypeMission, 
     MyNogPT_NatureMission as NatureMission
   from MyNog_PRESMISSION_TYPEMISSION;
+
+getListeDiligenceDefault: |
+  select MND.MyNogD_Cycle AS GROUPE,
+    MND.MyNogD_CycleLibelle AS GROUPELIBELLE,
+    MND.MyNogD_DiligenceCode AS DILIGENCE,
+    MND.MyNogD_DiligenceLibelle AS TITRE,
+    MND.MyNogD_Objectif AS OBJECTIF,
+    MND.MyNogD_Controle AS CONTROLE
+  from MyNog_DILIGENCE MND
+  where MyNogD_Bibliotheque = 'Non';
+
+getListeDiligenceBibliotheque: |
+  select MND.MyNogD_Cycle AS GROUPE,
+    MND.MyNogD_CycleLibelle AS GROUPELIBELLE,
+    MND.MyNogD_DiligenceCode AS DILIGENCE,
+    MND.MyNogD_DiligenceLibelle AS TITRE,
+    MND.MyNogD_Objectif AS OBJECTIF,
+    MND.MyNogD_Controle AS CONTROLE
+  from MyNog_DILIGENCE MND
+  where MyNogD_Bibliotheque = 'Oui';

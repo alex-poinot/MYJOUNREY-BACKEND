@@ -19,10 +19,32 @@ class NogController {
     });
   });
 
-  getTypeMissionNaureNog = asyncHandler(async (req, res) => {
+  getTypeMissionNatureNog = asyncHandler(async (req, res) => {
     logger.info('Controller: Requête GET /nogs');
     
-    const result = await this.nogService.getTypeMissionNaureNog();
+    const result = await this.nogService.getTypeMissionNatureNog();
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getListeDiligenceDefault = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    
+    const result = await this.nogService.getListeDiligenceDefault();
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getListeDiligenceBibliotheque = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    
+    const result = await this.nogService.getListeDiligenceBibliotheque();
     
     res.status(200).json({
       ...result,

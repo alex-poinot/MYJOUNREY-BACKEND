@@ -47,19 +47,53 @@ class NogDao {
     }
   }
 
-  async getTypeMissionNaureNog(dosPgi) {
+  async getTypeMissionNatureNog() {
     try {
       const queries = await this.loadQueries();
-      const query = queries.getTypeMissionNaureNog;
+      const query = queries.getTypeMissionNatureNog;
       logger.info('query',query);
       const pool = await getConnection();
       const request = pool.request();
-      
+
       const result = await request.query(query);
 
       return result.recordset;
     } catch (error) {
       logger.error('Erreur lors de la récupération des type mission nature:', error);
+      throw error;
+    }
+  }
+
+  async getListeDiligenceDefault() {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getListeDiligenceDefault;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+
+      const result = await request.query(query);
+
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération des diligences:', error);
+      throw error;
+    }
+  }
+
+  async getListeDiligenceBibliotheque() {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getListeDiligenceBibliotheque;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+
+      const result = await request.query(query);
+
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération des diligences:', error);
       throw error;
     }
   }
