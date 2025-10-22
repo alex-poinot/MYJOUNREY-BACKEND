@@ -139,7 +139,8 @@ getAllMissionAccessModuleEditor: |
         D.DOS_NOM,
         MD.MD_MISSION,
         MD.MD_MILLESIME,
-        MD.LIBELLE_MISSIONS
+        MD.LIBELLE_MISSIONS,
+        MD.CODE_AFFAIRE
     FROM MyModuleAffichage LDM
     LEFT JOIN ref_MISSION_DOSSIER MD  ON MD.CODE_AFFAIRE = LDM.DTMISS_MissionId
     LEFT JOIN ref_DOSSIER D       ON D.DOS_PGI = MD.DOS_PGI
