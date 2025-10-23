@@ -268,6 +268,126 @@ class NogController {
     });
   });
 
+  getListeValeurUnique = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getListeValeurUnique(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getPlanningMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getPlanningMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getEquipeInterMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getEquipeInterMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getContactMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getContactMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getAssocieMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getAssocieMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getLogicielMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getLogicielMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getDiligenceMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getDiligenceMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getDiligenceLabMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getDiligenceLabMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getDiligenceAddMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getDiligenceAddMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getFichiersAnnexeMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getFichiersAnnexeMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  getFEMJNog = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    const { codeAffaire } = req.params;
+    const result = await this.nogService.getFEMJNog(codeAffaire);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
 }
 
 export default NogController;

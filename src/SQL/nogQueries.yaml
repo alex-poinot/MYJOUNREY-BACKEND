@@ -465,4 +465,81 @@ deleteNogDiligenceLab: |
   DELETE FROM MyNog_DILIGENCE_ListeDiligenceLab
   WHERE MyNogDLL_CodeAffaire = @CodeAffaireParam;
 
+getListeValeurUnique: |
+  SELECT        MyNogVU_PRESDOSSIER_NomSociete, MyNogVU_PRESDOSSIER_Adresse, MyNogVU_PRESDOSSIER_Siret, MyNogVU_PRESDOSSIER_CodeApe, MyNogVU_PRESDOSSIER_LibelleApe, 
+                MyNogVU_PRESDOSSIER_DateLastModifCoordonnees, MyNogVU_PRESDOSSIER_LibelleExN1, MyNogVU_PRESDOSSIER_NbMoisExN1, MyNogVU_PRESDOSSIER_EffectifN1, MyNogVU_PRESDOSSIER_CapitauxPropresN1, 
+                MyNogVU_PRESDOSSIER_BilanN1, MyNogVU_PRESDOSSIER_CAN1, MyNogVU_PRESDOSSIER_ResultatNetN1, MyNogVU_PRESDOSSIER_LibelleExN2, MyNogVU_PRESDOSSIER_NbMoisExN2, 
+                MyNogVU_PRESDOSSIER_EffectifN2, MyNogVU_PRESDOSSIER_CapitauxPropresN2, MyNogVU_PRESDOSSIER_BilanN2, MyNogVU_PRESDOSSIER_CAN2, MyNogVU_PRESDOSSIER_ResultatNetN2, 
+                MyNogVU_PRESDOSSIER_DateLastModifChriffresSign, MyNogVU_PRESDOSSIER_ActiviteExHisto, MyNogVU_PRESDOSSIER_DateLastModifActiviteExHisto, MyNogVU_PRESMISSION_DateMAJLM, 
+                MyNogVU_PRESMISSION_MontantHonoraires, MyNogVU_PRESMISSION_DateLastModifLettreMission, MyNogVU_PRESMISSION_TypeMission, MyNogVU_PRESMISSION_DateLastModifTypeMission, 
+                MyNogVU_PRESMISSION_NatureMission, MyNogVU_PRESMISSION_DateLastModifNatureMission, MyNogVU_PRESMISSION_ConsultAutresPro, MyNogVU_PRESMISSION_Interim, MyNogVU_PRESMISSION_Final, 
+                MyNogVU_PRESMISSION_DelaiARespecter, MyNogVU_PRESMISSION_DateLastModifPlanning, MyNogVU_PRESMISSION_PrecisionTravaux, MyNogVU_PRESMISSION_DateLastModifPrecisionTravaux, 
+                MyNogVU_ORGAADMINCOMPTA_OrgaServiceAdmin, MyNogVU_ORGAADMINCOMPTA_DateLastModifOrgaServiceAdmin, MyNogVU_ORGAADMINCOMPTA_EInvoicing, MyNogVU_ORGAADMINCOMPTA_EReportingTransaction, 
+                MyNogVU_ORGAADMINCOMPTA_EReportingPaiement, MyNogVU_ORGAADMINCOMPTA_CasGestion, MyNogVU_ORGAADMINCOMPTA_MailEnvoiClient, MyNogVU_ORGAADMINCOMPTA_SignatureMandat, 
+                MyNogVU_ORGAADMINCOMPTA_DateLastModifFE, MyNogVU_ORGAADMINCOMPTA_SyntheseEntretien, MyNogVU_ORGAADMINCOMPTA_DateLastModifSyntheseEntretien, MyNogVU_ZONERISQUE_Vigilance, 
+                MyNogVU_ZONERISQUE_DateLastModifVigilance, MyNogVU_ZONERISQUE_AspectsComptables, MyNogVU_ZONERISQUE_AspectsFiscaux, MyNogVU_ZONERISQUE_AspectsSociaux, 
+                MyNogVU_ZONERISQUE_AspectsJuridiques, MyNogVU_ZONERISQUE_ComptesAnnuels, MyNogVU_ZONERISQUE_DateLastModifPrincipeComp, MyNogVU_ZONERISQUE_Seuil, MyNogVU_ZONERISQUE_DateLastModifSeuil, 
+                MyNogVU_RESTCLIENT_ChoixRestClient, MyNogVU_RESTCLIENT_ChoixOutil, MyNogVU_RESTCLIENT_LibelleAutreRestClient, MyNogVU_RESTCLIENT_LibelleAutreOutil, MyNogVU_RESTCLIENT_CommGeneral, 
+                MyNogVU_RESTCLIENT_DateLastModifRestClient, MyNogVU_DEONTOLOGIE_Coche1, MyNogVU_DEONTOLOGIE_Coche2, MyNogVU_DEONTOLOGIE_Coche3, MyNogVU_DEONTOLOGIE_DateLastModifCoche
+  FROM            MyNog_VALEUR_UNIQUE
+  WHERE MyNogVU_CodeAffaire = @CodeAffaireParam
+
+getPlanningMJNog: |
+  select MyNogPP_Fonction, MyNogPP_Nom, MyNogPP_Periode, MyNogPP_NbHeures,  MyNogPP_DateLastModif
+  from MyNog_PRESMISSION_Planning
+  where MyNogPP_CodeAffaire = @CodeAffaireParam
+  ORDER BY  MyNogPP_Id;
+
+getEquipeInterMJNog: |
+  select MyNogPE_Fonction, MyNogPE_Nom, MyNogPE_Actif, MyNogPE_DateLastModif
+  from MyNog_PRESMISSION_EquipeInter
+  where MyNogPE_CodeAffaire = @CodeAffaireParam;
+
+getContactMJNog: |
+  select MyNogPC_Id, MyNogPC_Prenom, MyNogPC_Nom, MyNogPC_Fonction, MyNogPC_Telephone, MyNogPC_AdresseMail, MyNogPC_DateLastModif
+  from MyNog_PRESDOSSIER_Contact
+  where MyNogPC_CodeAffaire = @CodeAffaireParam
+  order by MyNogPC_Id;
+
+getAssocieMJNog: |
+  select MyNogPA_Nom, MyNogPA_NbTitres, MyNogPA_MontantCapital, MyNogPA_PourcDetention, MyNogPA_DateLastModif
+  from MyNog_PRESDOSSIER_Associe
+  where MyNogPA_CodeAffaire = @CodeAffaireParam
+  order by MyNogPA_Id;
+
+getLogicielMJNog : |
+  select MyNogOL_InterneClient, MyNogOL_Type, MyNogOL_Outil, MyNogOL_Cout, MyNogOL_DateLastModif
+  from MyNog_ORGAADMINCOMPTA_Logiciel
+  where MyNogOL_CodeAffaire = @CodeAffaireParam
+  ORDER BY MyNogOL_InterneClient;
+
+getDiligenceMJNog: |
+  select MyNogDL_Cycle, MyNogDL_CycleLibelle, MyNogDL_CodeDiligence, MyNogDL_TitreDiligence, MyNogDL_Activation, MyNogDL_Objectif, MyNogDL_Controle, MyNogDL_DateLastModif
+  from MyNog_DILIGENCE_ListeDiligence
+  where MyNogDL_CodeAffaire = @CodeAffaireParam
+  ORDER BY MyNogDL_Id;
+
+getDiligenceLabMJNog: |
+  select MyNogDLL_Cycle, MyNogDLL_CycleLibelle, MyNogDLL_CodeDiligence, MyNogDLL_TitreDiligence, MyNogDLL_Activation, MyNogDLL_Objectif, MyNogDLL_Controle, MyNogDLL_DateLastModif
+  from MyNog_DILIGENCE_ListeDiligenceLab
+  where MyNogDLL_CodeAffaire = @CodeAffaireParam
+  ORDER BY MyNogDLL_Id;
+
+getDiligenceAddMJNog: |
+  select MyNogDLA_Cycle, MyNogDLA_CodeDiligence, MyNogDLA_TitreDiligence, MyNogDLA_Objectif, MyNogDLA_Controle, MyNogDLA_DateLastModif
+  from MyNog_DILIGENCE_ListeDiligenceAdd
+  where MyNogDLA_CodeAffaire = @CodeAffaireParam
+  ORDER BY MyNogDLA_Id;
+
+getFichiersAnnexeMJNog: |
+  select MyNogAFA_Titre, CAST(N'' AS xml).value('xs:base64Binary(xs:hexBinary(sql:column("MyNogAFA_File")))', 'varchar(max)') AS Base64_File, MyNogAFA_DateLastModif
+  from MyNog_ANNEXE_FichierAnnexe
+  where MyNogAFA_CodeAffaire = @CodeAffaireParam
+  order by MyNogAFA_Order;
+
+getFEMJNog: |
+  select MyNogOF_Categorie, MyNogOF_Mission, MyNogOF_Outil, MyNogOF_BD, MyNogOF_DateLastModif
+  from MyNog_ORGAADMINCOMPTA_FE
+  where MyNogOF_CodeAffaire = @CodeAffaireParam
+  order by MyNogOF_Id;
 

@@ -384,6 +384,193 @@ class NogService {
       };
     }
   }
+
+  async getListeValeurUnique(codeAffaire) {
+    try {
+      logger.info('Service: getListeValeurUnique');
+      const nogs = await this.nogDao.getListeValeurUnique(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getListeValeurUnique:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getListeValeurUnique'
+      };
+    }
+  }
+
+  async getPlanningMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getPlanningMJNog');
+      const nogs = await this.nogDao.getPlanningMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getPlanningMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getPlanningMJNog'
+      };
+    }
+  }
+
+  async getEquipeInterMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getEquipeInterMJNog');
+      const nogs = await this.nogDao.getEquipeInterMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getEquipeInterMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getEquipeInterMJNog'
+      };
+    }
+  }
+
+  async getContactMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getContactMJNog');
+      const nogs = await this.nogDao.getContactMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getContactMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getContactMJNog'
+      };
+    }
+  }
+
+  async getAssocieMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getAssocieMJNog');
+      const nogs = await this.nogDao.getAssocieMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getAssocieMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getAssocieMJNog'
+      };
+    }
+  }
+
+  async getLogicielMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getLogicielMJNog');
+      const nogs = await this.nogDao.getLogicielMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getLogicielMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getLogicielMJNog'
+      };
+    }
+  }
+
+  async getDiligenceMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getDiligenceMJNog');
+      const nogs = await this.nogDao.getDiligenceMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getDiligenceMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getDiligenceMJNog'
+      };
+    }
+  }
+
+  async getDiligenceLabMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getDiligenceLabMJNog');
+      const nogs = await this.nogDao.getDiligenceLabMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getDiligenceLabMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getDiligenceLabMJNog'
+      };
+    }
+  }
+
+  async getDiligenceAddMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getDiligenceAddMJNog');
+      const nogs = await this.nogDao.getDiligenceAddMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getDiligenceAddMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getDiligenceAddMJNog'
+      };
+    }
+  }
+
+  async getFichiersAnnexeMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getFichiersAnnexeMJNog');
+      const nogs = await this.nogDao.getFichiersAnnexeMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getFichiersAnnexeMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getFichiersAnnexeMJNog'
+      };
+    }
+  }
+
+  async getFEMJNog(codeAffaire) {
+    try {
+      logger.info('Service: getFEMJNog');
+      const nogs = await this.nogDao.getFEMJNog(codeAffaire);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de getFEMJNog:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de getFEMJNog'
+      };
+    }
+  }
 }
 
 export default NogService;

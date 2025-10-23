@@ -26,5 +26,16 @@ router.post('/insertNogValue', nogController.insertNogValue);
 router.post('/insertNogFileAnnexe', nogController.insertNogFileAnnexe);
 router.post('/insertNogDiligenceAdd', nogController.insertNogDiligenceAdd);
 router.post('/insertNogDiligenceLab', nogController.insertNogDiligenceLab);
+router.get('/getListeValeurUnique/:codeAffaire', nogController.getListeValeurUnique);
+router.get('/getPlanningMJNog/:codeAffaire', nogController.getPlanningMJNog);
+router.get('/getEquipeInterMJNog/:codeAffaire', nogController.getEquipeInterMJNog);
+router.get('/getContactMJNog/:codeAffaire', nogController.getContactMJNog);
+router.get('/getAssocieMJNog/:codeAffaire', nogController.getAssocieMJNog);
+router.get('/getLogicielMJNog/:codeAffaire', nogController.getLogicielMJNog);
+router.get('/getDiligenceMJNog/:codeAffaire', nogController.getDiligenceMJNog);
+router.get('/getDiligenceLabMJNog/:codeAffaire', nogController.getDiligenceLabMJNog);
+router.get('/getDiligenceAddMJNog/:codeAffaire', nogController.getDiligenceAddMJNog);
+router.get('/getFichiersAnnexeMJNog/:codeAffaire', nogController.getFichiersAnnexeMJNog);
+router.get('/getFEMJNog/:codeAffaire', nogController.getFEMJNog);
 
 export default router;

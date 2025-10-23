@@ -189,9 +189,9 @@ class NogDao {
           const request = pool.request();
           await request.input('CodeAffaireParam', sql.NVarChar, element.codeAffaire);
           await request.input('NomParam', sql.NVarChar, element.nom);
-          await request.input('NbTitresParam', sql.NVarChar, element.nbTitres);
-          await request.input('MontantCapitalParam', sql.NVarChar, element.montantCapital);
-          await request.input('PourcDetentionParam', sql.NVarChar, element.pourcDetention);
+          await request.input('NbTitresParam', sql.Numeric, element.nbTitres);
+          await request.input('MontantCapitalParam', sql.Numeric, element.montantCapital);
+          await request.input('PourcDetentionParam', sql.Numeric, element.pourcDetention);
           await request.query(query);
         }
       }
@@ -213,14 +213,14 @@ class NogDao {
       
       request.input('CodeAffaireParam', sql.NVarChar, obj.codeAffaire);
       request.input('LibelleExN1Param', sql.NVarChar, obj.libelleN1);
-      request.input('NbMoisExN1Param', sql.NVarChar, obj.nbMoisN1);
+      request.input('NbMoisExN1Param', sql.Int, obj.nbMoisN1);
       request.input('EffectifN1Param', sql.Numeric, obj.effectifN1);
       request.input('CapitauxPropresN1Param', sql.Numeric, obj.capitauxPropresN1);
       request.input('BilanN1Param', sql.Numeric, obj.bilanN1);
       request.input('CAN1Param', sql.Numeric, obj.caN1);
       request.input('ResultatNetN1Param', sql.Numeric, obj.resultatN1);
       request.input('LibelleExN2Param', sql.NVarChar, obj.libelleN2);
-      request.input('NbMoisExN2Param', sql.NVarChar, obj.nbMoisN2);
+      request.input('NbMoisExN2Param', sql.Int, obj.nbMoisN2);
       request.input('EffectifN2Param', sql.Numeric, obj.effectifN2);
       request.input('CapitauxPropresN2Param', sql.Numeric, obj.capitauxPropresN2);
       request.input('BilanN2Param', sql.Numeric, obj.bilanN2);
@@ -597,6 +597,438 @@ class NogDao {
       return [];
     } catch (error) {
       logger.error('Erreur lors de l\'insertion diligence lab:', error);
+      throw error;
+    }
+  }
+
+  async getListeValeurUnique(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getListeValeurUnique;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getListeValeurUnique:', error);
+      throw error;
+    }
+  }
+
+  async getPlanningMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getPlanningMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let sauvNom = '';
+      let i = 0;
+      let dateUpdate = '';
+
+      result.recordset.forEach(element => {
+        if(sauvNom == element.MyNogPP_Nom) {
+          obj[element.MyNogPP_Periode] = element.MyNogPP_NbHeures;
+        } else {
+          if(i != 0) {
+            tab.push(obj);
+          } else {
+            dateUpdate = element.MyNogPP_DateLastModif;
+          }
+          obj = new Object();
+          obj.fonction = element.MyNogPP_Fonction;
+          obj.nom = element.MyNogPP_Nom;
+          obj[element.MyNogPP_Periode] = element.MyNogPP_NbHeures;
+
+          sauvNom = element.MyNogPP_Nom;
+          i++;
+        }
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getPlanningMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getEquipeInterMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getEquipeInterMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let dateUpdate = '';
+
+      result.recordset.forEach(element => {
+        if(element.MyNogPE_Fonction == 'DMCM') {
+          obj.dmcm = element.MyNogPE_Nom;
+          obj.dmcmStatut = element.MyNogPE_Actif;
+        }
+        if(element.MyNogPE_Fonction == 'Responsable mission') {
+          obj.respMission = element.MyNogPE_Nom;
+          obj.respMissionStatut = element.MyNogPE_Actif;
+        } 
+        if(element.MyNogPE_Fonction == 'Factureur') {
+          obj.factureur = element.MyNogPE_Nom;
+          obj.factureurStatut = element.MyNogPE_Actif;
+        } 
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: obj
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getEquipeInterMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getContactMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getContactMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogPC_DateLastModif;
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.id = element.MyNogPC_Id;
+        obj.nom = element.MyNogPC_Nom;
+        obj.prenom = element.MyNogPC_Prenom;
+        obj.mail = element.MyNogPC_AdresseMail;
+        obj.telephone = element.MyNogPC_Telephone;
+        obj.libelle = element.MyNogPC_Fonction;
+        obj.fonction = element.MyNogPC_Fonction;
+        tab.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getContactMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getAssocieMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getAssocieMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogPA_DateLastModif;
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.nom = element.MyNogPA_Nom;
+        obj.nbPart = element.MyNogPA_NbTitres;
+        obj.partCapital = element.MyNogPA_MontantCapital;
+        obj.pourcPart = element.MyNogPA_PourcDetention;
+        tab.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getAssocieMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getLogicielMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getLogicielMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tabGT = [];
+      let tabClient = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogOL_DateLastModif;
+
+      result.recordset.forEach(element => {
+        if(element.MyNogOL_InterneClient == 'Interne') {
+          obj = new Object();
+          obj.type = element.MyNogOL_Type;
+          obj.logiciel = element.MyNogOL_Outil;
+          obj.montant = element.MyNogOL_Cout;
+          tabGT.push(obj);
+        } else if(element.MyNogOL_InterneClient == 'Client') {
+          obj = new Object();
+          obj.type = element.MyNogOL_Type;
+          obj.logiciel = element.MyNogOL_Outil;
+          tabClient.push(obj);
+        }
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        logicielGT: tabGT,
+        logicielClient: tabClient
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getLogicielMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getDiligenceMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getDiligenceMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogDL_DateLastModif;
+
+      let sauvCycle = '';
+      let i = 0;
+
+
+      result.recordset.forEach(element => {
+
+        if(sauvCycle == element.MyNogDL_Cycle) {
+          obj.tabDiligence.push(
+              {
+                cycle: element.MyNogDL_Cycle,
+                diligence: element.MyNogDL_CodeDiligence,
+                titre: element.MyNogDL_TitreDiligence,
+                activation: element.MyNogDL_Activation == 'Oui',
+                objectif: element.MyNogDL_Objectif,
+                controle: element.MyNogDL_Controle
+              }
+            );
+        } else {
+          if(i != 0) {
+            tab.push(obj);
+          }
+          obj = new Object();
+          obj.groupe = element.MyNogDL_Cycle;
+          obj.libelleGroupe = element.MyNogDL_CycleLibelle;
+          obj.tabDiligence = [
+            {
+              cycle: element.MyNogDL_Cycle,
+              diligence: element.MyNogDL_CodeDiligence,
+              titre: element.MyNogDL_TitreDiligence,
+              activation: element.MyNogDL_Activation == 'Oui',
+              objectif: element.MyNogDL_Objectif,
+              controle: element.MyNogDL_Controle
+            }
+          ];
+
+          sauvCycle = element.MyNogDL_Cycle;
+          i++;
+        }
+      });
+
+      tab.push(obj);
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getDiligenceMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getDiligenceLabMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getDiligenceLabMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogDLL_DateLastModif      
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.cycle = element.MyNogDLL_Cycle;
+        obj.diligence = element.MyNogDLL_CodeDiligence;
+        obj.titre = element.MyNogDLL_TitreDiligence;
+        obj.activation = element.MyNogDLL_Activation == 'Oui';
+        obj.objectif = element.MyNogDLL_Objectif;
+        obj.controle = element.MyNogDLL_Controle;
+        tab.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getDiligenceLabMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getDiligenceAddMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getDiligenceAddMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogDLA_DateLastModif      
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.cycle = element.MyNogDLA_Cycle;
+        obj.diligence = element.MyNogDLA_CodeDiligence;
+        obj.titre = element.MyNogDLA_TitreDiligence;
+        obj.objectif = element.MyNogDLA_Objectif;
+        obj.controle = element.MyNogDLA_Controle;
+        tab.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getDiligenceAddMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getFichiersAnnexeMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getFichiersAnnexeMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tab = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogAFA_DateLastModif      
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.titre = element.MyNogAFA_Titre;
+        obj.file = element.Base64_File;
+        tab.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        data: tab
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getFichiersAnnexeMJNog:', error);
+      throw error;
+    }
+  }
+
+  async getFEMJNog(codeAffaire) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.getFEMJNog;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
+
+      const result = await request.query(query);
+
+      let obj = new Object();
+      let tabMission = [];
+      let tabBD = [];
+      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogOF_DateLastModif      
+
+      result.recordset.forEach(element => {
+        obj = new Object();
+        obj.categorie = element.MyNogOF_Categorie;
+        obj.libelle = element.MyNogOF_Mission;
+        obj.logiciel = element.MyNogOF_Outil;
+        tabBD.push(element.MyNogOF_BD);
+        tabMission.push(obj);
+      });
+
+      let objR = {
+        dateUpdate: dateUpdate,
+        tabMission: tabMission,
+        tabBD: tabBD
+      }
+      return objR;
+    } catch (error) {
+      logger.error('Erreur lors de la récupération getFEMJNog:', error);
       throw error;
     }
   }
