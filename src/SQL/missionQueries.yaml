@@ -146,6 +146,6 @@ getAllMissionAccessModuleEditor: |
     LEFT JOIN ref_DOSSIER D       ON D.DOS_PGI = MD.DOS_PGI
     LEFT JOIN DROITS_MODULE DMO         ON DMO.DTMOD_ModuleId = LDM.MOD_ModuleId 
         AND DMO.DTMOD_ProfilId = LDM.DTMISS_ProfilMyJourney
-        AND DMO.DTMOD_ModuleModification = 'oui'
     WHERE D.DOS_PGI IS NOT NULL
+        and DMO.DTMOD_ModuleModification = 'oui'
     ORDER BY D.DOS_PGI, MD_MISSION, MD_MILLESIME;
