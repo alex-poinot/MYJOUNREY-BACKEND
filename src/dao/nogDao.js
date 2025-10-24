@@ -655,6 +655,8 @@ class NogDao {
         }
       });
 
+      tab.push(obj);
+
       let objR = {
         dateUpdate: dateUpdate,
         data: tab
