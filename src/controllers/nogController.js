@@ -388,6 +388,30 @@ class NogController {
       timestamp: new Date().toISOString()
     });
   });
+
+  updateValidationCollab = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    
+    const obj = req.body;
+    const result = await this.nogService.updateValidationCollab(obj);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
+
+  updateValidationAssocie = asyncHandler(async (req, res) => {
+    logger.info('Controller: Requête GET /nogs');
+    
+    const obj = req.body;
+    const result = await this.nogService.updateValidationAssocie(obj);
+    
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
 }
 
 export default NogController;

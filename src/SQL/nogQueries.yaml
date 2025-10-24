@@ -480,7 +480,8 @@ getListeValeurUnique: |
                 MyNogVU_ZONERISQUE_DateLastModifVigilance, MyNogVU_ZONERISQUE_AspectsComptables, MyNogVU_ZONERISQUE_AspectsFiscaux, MyNogVU_ZONERISQUE_AspectsSociaux, 
                 MyNogVU_ZONERISQUE_AspectsJuridiques, MyNogVU_ZONERISQUE_ComptesAnnuels, MyNogVU_ZONERISQUE_DateLastModifPrincipeComp, MyNogVU_ZONERISQUE_Seuil, MyNogVU_ZONERISQUE_DateLastModifSeuil, 
                 MyNogVU_RESTCLIENT_ChoixRestClient, MyNogVU_RESTCLIENT_ChoixOutil, MyNogVU_RESTCLIENT_LibelleAutreRestClient, MyNogVU_RESTCLIENT_LibelleAutreOutil, MyNogVU_RESTCLIENT_CommGeneral, 
-                MyNogVU_RESTCLIENT_DateLastModifRestClient, MyNogVU_DEONTOLOGIE_Coche1, MyNogVU_DEONTOLOGIE_Coche2, MyNogVU_DEONTOLOGIE_Coche3, MyNogVU_DEONTOLOGIE_DateLastModifCoche
+                MyNogVU_RESTCLIENT_DateLastModifRestClient, MyNogVU_DEONTOLOGIE_Coche1, MyNogVU_DEONTOLOGIE_Coche2, MyNogVU_DEONTOLOGIE_Coche3, MyNogVU_DEONTOLOGIE_DateLastModifCoche,
+                MyNogVU_ANNEXE_ValidationCollab, MyNogVU_ANNEXE_ValidationAssocie
   FROM            MyNog_VALEUR_UNIQUE
   WHERE MyNogVU_CodeAffaire = @CodeAffaireParam
 
@@ -542,4 +543,14 @@ getFEMJNog: |
   from MyNog_ORGAADMINCOMPTA_FE
   where MyNogOF_CodeAffaire = @CodeAffaireParam
   order by MyNogOF_Id;
+
+updateValidationCollab: |
+  UPDATE MyNog_VALEUR_UNIQUE
+  SET MyNogVU_ANNEXE_ValidationCollab = @ValidationParam
+  WHERE MyNogVU_CodeAffaire = @CodeAffaireParam
+
+updateValidationAssocie: |
+  UPDATE MyNog_VALEUR_UNIQUE
+  SET MyNogVU_ANNEXE_ValidationAssocie = @ValidationParam
+  WHERE MyNogVU_CodeAffaire = @CodeAffaireParam
 

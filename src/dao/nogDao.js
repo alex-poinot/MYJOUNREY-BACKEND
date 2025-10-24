@@ -189,9 +189,9 @@ class NogDao {
           const request = pool.request();
           await request.input('CodeAffaireParam', sql.NVarChar, element.codeAffaire);
           await request.input('NomParam', sql.NVarChar, element.nom);
-          await request.input('NbTitresParam', sql.Numeric, element.nbTitres);
-          await request.input('MontantCapitalParam', sql.Numeric, element.montantCapital);
-          await request.input('PourcDetentionParam', sql.Numeric, element.pourcDetention);
+          await request.input('NbTitresParam', sql.NVarChar, element.nbTitres);
+          await request.input('MontantCapitalParam', sql.NVarChar, element.montantCapital);
+          await request.input('PourcDetentionParam', sql.NVarChar, element.pourcDetention);
           await request.query(query);
         }
       }
@@ -958,6 +958,7 @@ class NogDao {
         dateUpdate: dateUpdate,
         data: tab
       }
+      
       return objR;
     } catch (error) {
       logger.error('Erreur lors de la récupération getDiligenceAddMJNog:', error);
@@ -1031,6 +1032,44 @@ class NogDao {
       return objR;
     } catch (error) {
       logger.error('Erreur lors de la récupération getFEMJNog:', error);
+      throw error;
+    }
+  }
+
+  async updateValidationCollab(obj) {
+    try {
+      const queries = await this.loadQueries();
+      let query = queries.updateValidationCollab;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      
+      request.input('ValidationParam', sql.NVarChar, obj.validation);
+      request.input('CodeAffaireParam', sql.NVarChar, obj.codeAffaire);
+      const result = await request.query(query);
+
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de updateValidationCollab:', error);
+      throw error;
+    }
+  }
+
+  async updateValidationAssocie(obj) {
+    try {
+      const queries = await this.loadQueries();
+      let query = queries.updateValidationAssocie;
+      logger.info('query',query);
+      const pool = await getConnection();
+      const request = pool.request();
+      
+      request.input('ValidationParam', sql.NVarChar, obj.validation);
+      request.input('CodeAffaireParam', sql.NVarChar, obj.codeAffaire);
+      const result = await request.query(query);
+
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de updateValidationAssocie:', error);
       throw error;
     }
   }

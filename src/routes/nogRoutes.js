@@ -37,5 +37,7 @@ router.get('/getDiligenceLabMJNog/:codeAffaire', nogController.getDiligenceLabMJ
 router.get('/getDiligenceAddMJNog/:codeAffaire', nogController.getDiligenceAddMJNog);
 router.get('/getFichiersAnnexeMJNog/:codeAffaire', nogController.getFichiersAnnexeMJNog);
 router.get('/getFEMJNog/:codeAffaire', nogController.getFEMJNog);
+router.post('/updateValidationCollab', nogController.updateValidationCollab);
+router.post('/updateValidationAssocie', nogController.updateValidationAssocie);
 
 export default router;

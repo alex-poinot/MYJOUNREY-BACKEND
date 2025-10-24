@@ -571,6 +571,40 @@ class NogService {
       };
     }
   }
+
+  async updateValidationCollab(obj) {
+    try {
+      logger.info('Service: updateValidationCollab');
+      const nogs = await this.nogDao.updateValidationCollab(obj);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de updateValidationCollab:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de updateValidationCollab'
+      };
+    }
+  }
+
+  async updateValidationAssocie(obj) {
+    try {
+      logger.info('Service: updateValidationAssocie');
+      const nogs = await this.nogDao.updateValidationAssocie(obj);
+      return {
+        success: true,
+        data: nogs
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de updateValidationAssocie:', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de updateValidationAssocie'
+      };
+    }
+  }
 }
 
 export default NogService;
