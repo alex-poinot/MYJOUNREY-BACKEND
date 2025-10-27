@@ -57,6 +57,23 @@ class FileService {
       };
     }
   }
+
+  async setDateFichierModuleFile(fileId, dateFichier, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil) {
+    try {
+      logger.info(`Service: Tentative dupdate date du fichier avec l'ID ${fileId}`);
+      const result = await this.fileDao.setDateFichierModuleFile(fileId, dateFichier, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil);
+      return {
+        success: true,
+        data: result
+      };
+    } catch (error) {
+      logger.error('Service: Erreur lors de lupdate date du fichier :', error);
+      throw {
+        status: 500,
+        message: 'Erreur lors de lupdate date du fichier'
+      };
+    }
+  }
 }
 
 export default FileService;

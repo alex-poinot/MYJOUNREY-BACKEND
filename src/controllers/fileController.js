@@ -43,6 +43,18 @@ class FileController {
       timestamp: new Date().toISOString()
     });
   });
+
+  setDateFichierModuleFile = asyncHandler(async (req, res) => {
+    logger.info(`Controller: Requête POST /setDateFichierModuleFile`);
+
+    const moduleFile = req.body;
+    const result = await this.fileService.setDateFichierModuleFile(moduleFile.fileId, moduleFile.dateFichier, moduleFile.email, moduleFile.source, moduleFile.missionIdDosPgiDosGroupe, moduleFile.module, moduleFile.mailPriseProfil);
+
+    res.status(200).json({
+      ...result,
+      timestamp: new Date().toISOString()
+    });
+  });
 }
 
 export default FileController;

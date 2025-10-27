@@ -269,6 +269,51 @@ class FileDao {
       throw error;
     }
   }
+
+  async setDateFichierModuleFile(fileId, dateFichier, email, source, missionIdDosPgiDosGroupe, module, mailPriseProfil) {
+    try {
+      const queries = await this.loadQueries();
+      const query = queries.setDateFichierModuleFile;
+      logger.info('query', query);
+      const pool = await getConnection();
+      const request = pool.request();
+
+      request.input('DateFichierParam', sql.NVarChar, dateFichier);
+      request.input('FileIdParam', sql.Int, fileId);
+
+      const result = await request.query(query);
+
+      if(source === 'Mission') {
+        await logDao.setLogMission({
+          email,
+          missionId: missionIdDosPgiDosGroupe,
+          modif: `Modification date fichier ${source.toLowerCase()}`,
+          typeModif: 'Modification date fichier vue listing',
+          module,
+          champ: source,
+          valeur: fileId.toString(),
+          periode: dateFichier == '' ? null : dateFichier,
+          mailPriseProfil: mailPriseProfil || null
+        });
+      } else {
+        await logDao.setLogMission({
+          email,
+          dosPgi: missionIdDosPgiDosGroupe,
+          modif: `Modification date fichier ${source.toLowerCase()}`,
+          typeModif: 'Modification date fichier vue listing',
+          module,
+          champ: source,
+          valeur: fileId.toString(),
+          periode: dateFichier == '' ? null : dateFichier,
+          mailPriseProfil: mailPriseProfil || null
+        });
+      }
+      return result.recordset;
+    } catch (error) {
+      logger.error('Erreur lors de lupdate de la date du fichier:', error);
+      throw error;
+    }
+  }
 }
 
 export default FileDao;
