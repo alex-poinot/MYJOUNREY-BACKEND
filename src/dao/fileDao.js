@@ -278,7 +278,7 @@ class FileDao {
       const pool = await getConnection();
       const request = pool.request();
 
-      request.input('DateFichierParam', sql.NVarChar, dateFichier);
+      request.input('DateFichierParam', sql.NVarChar, dateFichier == '' ? null : dateFichier);
       request.input('FileIdParam', sql.Int, fileId);
 
       const result = await request.query(query);
