@@ -36,7 +36,6 @@ router.get('/getDiligenceMJNog/:codeAffaire', nogController.getDiligenceMJNog);
 router.get('/getDiligenceLabMJNog/:codeAffaire', nogController.getDiligenceLabMJNog);
 router.get('/getDiligenceAddMJNog/:codeAffaire', nogController.getDiligenceAddMJNog);
 router.get('/getFichiersAnnexeMJNog/:codeAffaire', nogController.getFichiersAnnexeMJNog);
-router.get('/getFEMJNog/:codeAffaire', nogController.getFEMJNog);
 router.post('/updateValidationCollab', nogController.updateValidationCollab);
 router.post('/updateValidationAssocie', nogController.updateValidationAssocie);
 

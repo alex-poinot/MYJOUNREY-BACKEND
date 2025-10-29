@@ -555,23 +555,6 @@ class NogService {
     }
   }
 
-  async getFEMJNog(codeAffaire) {
-    try {
-      logger.info('Service: getFEMJNog');
-      const nogs = await this.nogDao.getFEMJNog(codeAffaire);
-      return {
-        success: true,
-        data: nogs
-      };
-    } catch (error) {
-      logger.error('Service: Erreur lors de getFEMJNog:', error);
-      throw {
-        status: 500,
-        message: 'Erreur lors de getFEMJNog'
-      };
-    }
-  }
-
   async updateValidationCollab(obj) {
     try {
       logger.info('Service: updateValidationCollab');

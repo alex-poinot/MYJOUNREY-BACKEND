@@ -371,16 +371,9 @@ class NogDao {
   async insertNogFE(obj) {
     try {
       const queries = await this.loadQueries();
-
-      const queryD = queries.deleteNogFE;
-      const query = queries.insertNogFE;
       const queryU = queries.insertNogFEUnique;
-      logger.info('query', query);
+      logger.info('query', queryU);
       const pool = await getConnection();
-
-      const requestD = pool.request();
-      await requestD.input('CodeAffaireParam', sql.NVarChar, obj.tableFE[0].codeAffaire);
-      await requestD.query(queryD);
 
       const requestU = pool.request();
       await requestU.input('CodeAffaireParam', sql.NVarChar, obj.uniqueFE.codeAffaire);
@@ -390,19 +383,9 @@ class NogDao {
       await requestU.input('CasGestionParam', sql.NVarChar, obj.uniqueFE.casGestion);
       await requestU.input('EnvoiMailParam', sql.NVarChar, obj.uniqueFE.envoiMail);
       await requestU.input('SignatureMandatParam', sql.NVarChar, obj.uniqueFE.signatureMandat);
+      await requestU.input('CommentaireFEParam', sql.NVarChar, obj.uniqueFE.commentaireFE);
       await requestU.query(queryU);
       
-      for (const element of obj.tableFE) {
-        if (element.categorie != null) {
-          const request = pool.request();
-          await request.input('CodeAffaireParam', sql.NVarChar, element.codeAffaire);
-          await request.input('CategorieParam', sql.NVarChar, element.categorie);
-          await request.input('MissionParam', sql.NVarChar, element.mission);
-          await request.input('OutilParam', sql.NVarChar, element.outil);
-          await request.input('BDParam', sql.NVarChar, element.bd);
-          await request.query(query);
-        }
-      }
       return [];
     } catch (error) {
       logger.error('Erreur lors de l\'insertion FE :', error);
@@ -995,43 +978,6 @@ class NogDao {
       return objR;
     } catch (error) {
       logger.error('Erreur lors de la récupération getFichiersAnnexeMJNog:', error);
-      throw error;
-    }
-  }
-
-  async getFEMJNog(codeAffaire) {
-    try {
-      const queries = await this.loadQueries();
-      const query = queries.getFEMJNog;
-      logger.info('query',query);
-      const pool = await getConnection();
-      const request = pool.request();
-      request.input('CodeAffaireParam', sql.NVarChar, codeAffaire);
-
-      const result = await request.query(query);
-
-      let obj = new Object();
-      let tabMission = [];
-      let tabBD = [];
-      let dateUpdate = result.recordset.length == 0 ? '' : result.recordset[0].MyNogOF_DateLastModif      
-
-      result.recordset.forEach(element => {
-        obj = new Object();
-        obj.categorie = element.MyNogOF_Categorie;
-        obj.libelle = element.MyNogOF_Mission;
-        obj.logiciel = element.MyNogOF_Outil;
-        tabBD.push(element.MyNogOF_BD);
-        tabMission.push(obj);
-      });
-
-      let objR = {
-        dateUpdate: dateUpdate,
-        tabMission: tabMission,
-        tabBD: tabBD
-      }
-      return objR;
-    } catch (error) {
-      logger.error('Erreur lors de la récupération getFEMJNog:', error);
       throw error;
     }
   }

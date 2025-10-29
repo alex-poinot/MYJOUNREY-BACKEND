@@ -378,17 +378,6 @@ class NogController {
     });
   });
 
-  getFEMJNog = asyncHandler(async (req, res) => {
-    logger.info('Controller: Requête GET /nogs');
-    const { codeAffaire } = req.params;
-    const result = await this.nogService.getFEMJNog(codeAffaire);
-    
-    res.status(200).json({
-      ...result,
-      timestamp: new Date().toISOString()
-    });
-  });
-
   updateValidationCollab = asyncHandler(async (req, res) => {
     logger.info('Controller: Requête GET /nogs');
     

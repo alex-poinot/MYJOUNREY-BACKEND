@@ -278,20 +278,6 @@ deleteNogLogiciel: |
   DELETE FROM MyNog_ORGAADMINCOMPTA_Logiciel
   WHERE MyNogOL_CodeAffaire = @CodeAffaireParam;
 
-insertNogFE: |
-  DECLARE @CodeAffaire VARCHAR(500) = @CodeAffaireParam;
-  DECLARE @Categorie VARCHAR(500) = @CategorieParam;
-  DECLARE @Mission VARCHAR(500) = @MissionParam;
-  DECLARE @Outil VARCHAR(500) = @OutilParam;  
-  DECLARE @BD VARCHAR(500) = @BDParam;
-
-  INSERT INTO MyNog_ORGAADMINCOMPTA_FE (MyNogOF_CodeAffaire, MyNogOF_Categorie, MyNogOF_Mission, MyNogOF_Outil, MyNogOF_BD, MyNogOF_DateLastModif)
-  VALUES (@CodeAffaire, @Categorie, @Mission, @Outil, @BD, GETDATE());
-
-deleteNogFE: |
-  DELETE FROM MyNog_ORGAADMINCOMPTA_FE
-  WHERE MyNogOF_CodeAffaire = @CodeAffaireParam;
-
 insertNogFEUnique: |
   DECLARE @CodeAffaire VARCHAR(500) = @CodeAffaireParam;
   DECLARE @EInvoicing VARCHAR(500) = @EInvoicingParam;
@@ -300,6 +286,7 @@ insertNogFEUnique: |
   DECLARE @CasGestion VARCHAR(500) = @CasGestionParam;
   DECLARE @EnvoiMail VARCHAR(500) = @EnvoiMailParam;
   DECLARE @SignatureMandat VARCHAR(500) = @SignatureMandatParam;
+  DECLARE @CommentaireFE VARCHAR(max) = @CommentaireFEParam;
 
   IF EXISTS (SELECT 1 FROM MyNog_VALEUR_UNIQUE WHERE MyNogVU_CodeAffaire = @CodeAffaire)
     BEGIN
@@ -328,14 +315,18 @@ insertNogFEUnique: |
       WHERE MyNogVU_CodeAffaire = @CodeAffaire
 
       UPDATE MyNog_VALEUR_UNIQUE
+      SET MyNogVU_ORGAADMINCOMPTA_CommentaireFE = @CommentaireFE
+      WHERE MyNogVU_CodeAffaire = @CodeAffaire
+
+      UPDATE MyNog_VALEUR_UNIQUE
       SET MyNogVU_ORGAADMINCOMPTA_DateLastModifFE = GETDATE()
       WHERE MyNogVU_CodeAffaire = @CodeAffaire
     END
   ELSE
     BEGIN
       INSERT INTO MyNog_VALEUR_UNIQUE (MyNogVU_CodeAffaire, MyNogVU_ORGAADMINCOMPTA_EInvoicing, MyNogVU_ORGAADMINCOMPTA_EReportingPaiement, MyNogVU_ORGAADMINCOMPTA_EReportingTransaction,
-      MyNogVU_ORGAADMINCOMPTA_CasGestion, MyNogVU_ORGAADMINCOMPTA_MailEnvoiClient, MyNogVU_ORGAADMINCOMPTA_SignatureMandat, MyNogVU_ORGAADMINCOMPTA_DateLastModifFE)
-      VALUES (@CodeAffaire, @EInvoicing, @EReportingPaiement, @EReportingTransaction, @CasGestion, @EnvoiMail, @SignatureMandat, GETDATE())
+      MyNogVU_ORGAADMINCOMPTA_CasGestion, MyNogVU_ORGAADMINCOMPTA_MailEnvoiClient, MyNogVU_ORGAADMINCOMPTA_SignatureMandat, MyNogVU_ORGAADMINCOMPTA_CommentaireFE, MyNogVU_ORGAADMINCOMPTA_DateLastModifFE)
+      VALUES (@CodeAffaire, @EInvoicing, @EReportingPaiement, @EReportingTransaction, @CasGestion, @EnvoiMail, @SignatureMandat, @CommentaireFE, GETDATE())
     END;
 
 insertNogVigilance: |
@@ -481,7 +472,7 @@ getListeValeurUnique: |
                 MyNogVU_ZONERISQUE_AspectsJuridiques, MyNogVU_ZONERISQUE_ComptesAnnuels, MyNogVU_ZONERISQUE_DateLastModifPrincipeComp, MyNogVU_ZONERISQUE_Seuil, MyNogVU_ZONERISQUE_DateLastModifSeuil, 
                 MyNogVU_RESTCLIENT_ChoixRestClient, MyNogVU_RESTCLIENT_ChoixOutil, MyNogVU_RESTCLIENT_LibelleAutreRestClient, MyNogVU_RESTCLIENT_LibelleAutreOutil, MyNogVU_RESTCLIENT_CommGeneral, 
                 MyNogVU_RESTCLIENT_DateLastModifRestClient, MyNogVU_DEONTOLOGIE_Coche1, MyNogVU_DEONTOLOGIE_Coche2, MyNogVU_DEONTOLOGIE_Coche3, MyNogVU_DEONTOLOGIE_DateLastModifCoche,
-                MyNogVU_ANNEXE_ValidationCollab, MyNogVU_ANNEXE_ValidationAssocie
+                MyNogVU_ANNEXE_ValidationCollab, MyNogVU_ANNEXE_ValidationAssocie, MyNogVU_ORGAADMINCOMPTA_CommentaireFE
   FROM            MyNog_VALEUR_UNIQUE
   WHERE MyNogVU_CodeAffaire = @CodeAffaireParam
 
@@ -537,12 +528,6 @@ getFichiersAnnexeMJNog: |
   from MyNog_ANNEXE_FichierAnnexe
   where MyNogAFA_CodeAffaire = @CodeAffaireParam
   order by MyNogAFA_Order;
-
-getFEMJNog: |
-  select MyNogOF_Categorie, MyNogOF_Mission, MyNogOF_Outil, MyNogOF_BD, MyNogOF_DateLastModif
-  from MyNog_ORGAADMINCOMPTA_FE
-  where MyNogOF_CodeAffaire = @CodeAffaireParam
-  order by MyNogOF_Id;
 
 updateValidationCollab: |
   UPDATE MyNog_VALEUR_UNIQUE
