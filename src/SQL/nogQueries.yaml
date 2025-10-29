@@ -22,8 +22,7 @@ getListeDiligenceDefault: |
     MND.MyNogD_CycleLibelle AS GROUPELIBELLE,
     MND.MyNogD_DiligenceCode AS DILIGENCE,
     MND.MyNogD_DiligenceLibelle AS TITRE,
-    MND.MyNogD_Objectif AS OBJECTIF,
-    MND.MyNogD_Controle AS CONTROLE
+    MND.MyNogD_Objectif AS OBJECTIF
   from MyNog_DILIGENCE MND
   where MyNogD_Bibliotheque = 'Non';
 
@@ -32,8 +31,7 @@ getListeDiligenceBibliotheque: |
     MND.MyNogD_CycleLibelle AS GROUPELIBELLE,
     MND.MyNogD_DiligenceCode AS DILIGENCE,
     MND.MyNogD_DiligenceLibelle AS TITRE,
-    MND.MyNogD_Objectif AS OBJECTIF,
-    MND.MyNogD_Controle AS CONTROLE
+    MND.MyNogD_Objectif AS OBJECTIF
   from MyNog_DILIGENCE MND
   where MyNogD_Bibliotheque = 'Oui';
 
@@ -357,11 +355,10 @@ insertNogDiligence: |
   DECLARE @TitreDiligence VARCHAR(500) = @TitreDiligenceParam;  
   DECLARE @Activation VARCHAR(500) = @ActivationParam;
   DECLARE @Objectif VARCHAR(max) = @ObjectifParam;
-  DECLARE @Controle VARCHAR(max) = @ControleParam;
 
   INSERT INTO MyNog_DILIGENCE_ListeDiligence (MyNogDL_CodeAffaire, MyNogDL_Cycle, MyNogDL_CycleLibelle, MyNogDL_CodeDiligence, MyNogDL_TitreDiligence, MyNogDL_Activation, 
-    MyNogDL_Objectif, MyNogDL_Controle, MyNogDL_DateLastModif)
-  VALUES (@CodeAffaire, @Cycle, @CycleLibelle, @CodeDiligence, @TitreDiligence, @Activation, @Objectif, @Controle, GETDATE());
+    MyNogDL_Objectif, MyNogDL_DateLastModif)
+  VALUES (@CodeAffaire, @Cycle, @CycleLibelle, @CodeDiligence, @TitreDiligence, @Activation, @Objectif, GETDATE());
 
 deleteNogDiligence: |
   DELETE FROM MyNog_DILIGENCE_ListeDiligence
@@ -428,11 +425,10 @@ insertNogDiligenceAdd: |
   DECLARE @CodeDiligence VARCHAR(500) = @CodeDiligenceParam;
   DECLARE @TitreDiligence VARCHAR(500) = @TitreDiligenceParam;  
   DECLARE @Objectif VARCHAR(max) = @ObjectifParam;
-  DECLARE @Controle VARCHAR(max) = @ControleParam;
 
   INSERT INTO MyNog_DILIGENCE_ListeDiligenceAdd (MyNogDLA_CodeAffaire, MyNogDLA_Cycle, MyNogDLA_CodeDiligence, MyNogDLA_TitreDiligence,
-    MyNogDLA_Objectif, MyNogDLA_Controle, MyNogDLA_DateLastModif)
-  VALUES (@CodeAffaire, @Cycle, @CodeDiligence, @TitreDiligence, @Objectif, @Controle, GETDATE());
+    MyNogDLA_Objectif, MyNogDLA_DateLastModif)
+  VALUES (@CodeAffaire, @Cycle, @CodeDiligence, @TitreDiligence, @Objectif, GETDATE());
 
 deleteNogDiligenceAdd: |
   DELETE FROM MyNog_DILIGENCE_ListeDiligenceAdd
@@ -446,11 +442,10 @@ insertNogDiligenceLab: |
   DECLARE @TitreDiligence VARCHAR(500) = @TitreDiligenceParam;  
   DECLARE @Activation VARCHAR(500) = @ActivationParam;
   DECLARE @Objectif VARCHAR(max) = @ObjectifParam;
-  DECLARE @Controle VARCHAR(max) = @ControleParam;
 
   INSERT INTO MyNog_DILIGENCE_ListeDiligenceLab (MyNogDLL_CodeAffaire, MyNogDLL_Cycle, MyNogDLL_CycleLibelle, MyNogDLL_CodeDiligence, MyNogDLL_TitreDiligence, MyNogDLL_Activation, 
-    MyNogDLL_Objectif, MyNogDLL_Controle, MyNogDLL_DateLastModif)
-  VALUES (@CodeAffaire, @Cycle, @CycleLibelle, @CodeDiligence, @TitreDiligence, @Activation, @Objectif, @Controle, GETDATE());
+    MyNogDLL_Objectif, MyNogDLL_DateLastModif)
+  VALUES (@CodeAffaire, @Cycle, @CycleLibelle, @CodeDiligence, @TitreDiligence, @Activation, @Objectif, GETDATE());
 
 deleteNogDiligenceLab: |
   DELETE FROM MyNog_DILIGENCE_ListeDiligenceLab
@@ -506,19 +501,19 @@ getLogicielMJNog : |
   ORDER BY MyNogOL_InterneClient;
 
 getDiligenceMJNog: |
-  select MyNogDL_Cycle, MyNogDL_CycleLibelle, MyNogDL_CodeDiligence, MyNogDL_TitreDiligence, MyNogDL_Activation, MyNogDL_Objectif, MyNogDL_Controle, MyNogDL_DateLastModif
+  select MyNogDL_Cycle, MyNogDL_CycleLibelle, MyNogDL_CodeDiligence, MyNogDL_TitreDiligence, MyNogDL_Activation, MyNogDL_Objectif, MyNogDL_DateLastModif
   from MyNog_DILIGENCE_ListeDiligence
   where MyNogDL_CodeAffaire = @CodeAffaireParam
   ORDER BY MyNogDL_Id;
 
 getDiligenceLabMJNog: |
-  select MyNogDLL_Cycle, MyNogDLL_CycleLibelle, MyNogDLL_CodeDiligence, MyNogDLL_TitreDiligence, MyNogDLL_Activation, MyNogDLL_Objectif, MyNogDLL_Controle, MyNogDLL_DateLastModif
+  select MyNogDLL_Cycle, MyNogDLL_CycleLibelle, MyNogDLL_CodeDiligence, MyNogDLL_TitreDiligence, MyNogDLL_Activation, MyNogDLL_Objectif, MyNogDLL_DateLastModif
   from MyNog_DILIGENCE_ListeDiligenceLab
   where MyNogDLL_CodeAffaire = @CodeAffaireParam
   ORDER BY MyNogDLL_Id;
 
 getDiligenceAddMJNog: |
-  select MyNogDLA_Cycle, MyNogDLA_CodeDiligence, MyNogDLA_TitreDiligence, MyNogDLA_Objectif, MyNogDLA_Controle, MyNogDLA_DateLastModif
+  select MyNogDLA_Cycle, MyNogDLA_CodeDiligence, MyNogDLA_TitreDiligence, MyNogDLA_Objectif, MyNogDLA_DateLastModif
   from MyNog_DILIGENCE_ListeDiligenceAdd
   where MyNogDLA_CodeAffaire = @CodeAffaireParam
   ORDER BY MyNogDLA_Id;

@@ -435,7 +435,6 @@ class NogDao {
           await request.input('TitreDiligenceParam', sql.NVarChar, element.titreDiligence);
           await request.input('ActivationParam', sql.NVarChar, element.activation);
           await request.input('ObjectifParam', sql.NVarChar, element.objectif);
-          await request.input('ControleParam', sql.NVarChar, element.controle);
           await request.query(query);
         }
       }
@@ -539,9 +538,9 @@ class NogDao {
           await request.input('CodeDiligenceParam', sql.NVarChar, element.codeDiligence);
           await request.input('TitreDiligenceParam', sql.NVarChar, element.titreDiligence);
           await request.input('ObjectifParam', sql.NVarChar, element.objectif);
-          await request.input('ControleParam', sql.NVarChar, element.controle);
           await request.query(query);
         }
+        
       }
       return [];
     } catch (error) {
@@ -573,7 +572,6 @@ class NogDao {
           await request.input('TitreDiligenceParam', sql.NVarChar, element.titreDiligence);
           await request.input('ActivationParam', sql.NVarChar, element.activation);
           await request.input('ObjectifParam', sql.NVarChar, element.objectif);
-          await request.input('ControleParam', sql.NVarChar, element.controle);
           await request.query(query);
         }
       }
@@ -835,8 +833,7 @@ class NogDao {
                 diligence: element.MyNogDL_CodeDiligence,
                 titre: element.MyNogDL_TitreDiligence,
                 activation: element.MyNogDL_Activation == 'Oui',
-                objectif: element.MyNogDL_Objectif,
-                controle: element.MyNogDL_Controle
+                objectif: element.MyNogDL_Objectif
               }
             );
         } else {
@@ -852,8 +849,7 @@ class NogDao {
               diligence: element.MyNogDL_CodeDiligence,
               titre: element.MyNogDL_TitreDiligence,
               activation: element.MyNogDL_Activation == 'Oui',
-              objectif: element.MyNogDL_Objectif,
-              controle: element.MyNogDL_Controle
+              objectif: element.MyNogDL_Objectif
             }
           ];
 
@@ -897,7 +893,6 @@ class NogDao {
         obj.titre = element.MyNogDLL_TitreDiligence;
         obj.activation = element.MyNogDLL_Activation == 'Oui';
         obj.objectif = element.MyNogDLL_Objectif;
-        obj.controle = element.MyNogDLL_Controle;
         tab.push(obj);
       });
 
@@ -933,7 +928,6 @@ class NogDao {
         obj.diligence = element.MyNogDLA_CodeDiligence;
         obj.titre = element.MyNogDLA_TitreDiligence;
         obj.objectif = element.MyNogDLA_Objectif;
-        obj.controle = element.MyNogDLA_Controle;
         tab.push(obj);
       });
 
